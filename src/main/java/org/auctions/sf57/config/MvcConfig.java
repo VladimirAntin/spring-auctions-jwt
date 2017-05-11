@@ -14,8 +14,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter{
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("forward:/index.html");
-//        registry.addViewController("/login").setViewName("forward:/login.html");
-//        registry.addViewController("/hello").setViewName("forward:/hello.html");
+        registry.addViewController("/login").setViewName("forward:/login.html");
     }
 //    @Bean
 //    public InternalResourceViewResolver viewResolver() {
