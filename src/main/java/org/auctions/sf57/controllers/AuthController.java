@@ -1,5 +1,6 @@
 package org.auctions.sf57.controllers;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.ServletException;
@@ -31,7 +32,7 @@ public class AuthController {
             throw new ServletException("Invalid login");
         }
         return new LoginResponse(Jwts.builder().setSubject(user.getEmail())
-            .claim("role", user.getRole()).setIssuedAt(new Date())
+            .claim("role", user.getRole()).setIssuedAt(new Date()).setExpiration(getExpirationDate())
             .signWith(SignatureAlgorithm.HS256, "secretkey").compact());
     }
 
@@ -48,5 +49,12 @@ public class AuthController {
         public LoginResponse(final String token) {
             this.token = token;
         }
+    }
+
+    public Date getExpirationDate(){
+        Calendar cal = Calendar.getInstance(); // creates calendar
+        cal.setTime(new Date()); // sets calendar time/date
+        cal.add(Calendar.HOUR_OF_DAY, 24); // adds one hour
+        return cal.getTime(); // returns new date object, one hour in the future
     }
 }

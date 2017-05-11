@@ -16,7 +16,7 @@
                 <div layout-gt-sm="row">
                     <md-input-container class="md-block" flex-gt-sm>
                         <label>Email</label>
-                        <input required ng-model="user.username" ng-change="change_inputs(login_form)"
+                        <input autofocus required ng-model="user.username" ng-change="change_inputs(login_form)"
                                minlength="6" maxlength="30" md-maxlength="30" ng-pattern="/^.+@.+\..+$/" />
                         <div ng-messages="login_form.username.$error" role="alert">
                             <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">

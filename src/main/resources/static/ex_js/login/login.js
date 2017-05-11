@@ -9,6 +9,10 @@ var PASSWORD_ERROR = "Your password be between 1 and 10 characters long.";
 app.controller('login', LoginPost);
 
 function LoginPost($scope,$http) {
+    if(sessionStorage.getItem("jwt_token")){
+        window.location.replace("/home")
+    }
+
     $scope.user = {username:"",password:""}
 
     $scope.data = {
@@ -48,6 +52,7 @@ function LoginPost($scope,$http) {
             data: $scope.user
         }).then(function success(response) {
             sessionStorage.setItem("jwt_token",response.data.token)
+            window.location.replace("/home")
         }, function error(response) {
             $scope.data.error_login = response.data.message;
         });

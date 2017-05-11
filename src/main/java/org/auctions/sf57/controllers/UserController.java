@@ -31,7 +31,7 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers(final HttpServletRequest request){
     	final Claims claims = (Claims) request.getAttribute("claims");
     	String role = (String)claims.get("role");
-        if((role).equals("admin")){
+        if(role.equals("admin")){
             return new ResponseEntity<List<User>>(userService.findAll(), HttpStatus.OK);    		
     	}
         return new ResponseEntity<List<User>>(HttpStatus.UNAUTHORIZED);    		
@@ -40,16 +40,27 @@ public class UserController {
     @SuppressWarnings("unchecked")
     @GetMapping(value = "/users/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") long id,final HttpServletRequest request){
-    	final Claims claims = (Claims) request.getAttribute("claims");
+        final Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
-        if((role).equals("admin")){
+        if(role.equals("admin")){
             User user = userService.findOne(id);
             if(user==null){
                 return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<User>(user, HttpStatus.OK);
-    	}
-        return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);    		
+        }
+        return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
     }
 
+    @SuppressWarnings("unchecked")
+    @GetMapping(value = "/me")
+    public ResponseEntity<User> me(final HttpServletRequest request){
+        final Claims claims = (Claims) request.getAttribute("claims");
+        String role = (String)claims.get("role");
+        if(role!=null){
+            User user = userService.findByEmail(claims.getSubject());
+            return new ResponseEntity<User>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+    }
 }
