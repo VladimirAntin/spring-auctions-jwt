@@ -2,8 +2,11 @@
  * Created by vladimir_antin on 11.5.17..
  */
 var nav = angular.module('nav', ['ngMaterial','ngRoute']);
-nav.controller('nav', function nav ($scope, $mdSidenav,$http) {
-    $scope.token = "jwt "+sessionStorage.getItem("jwt_token");
+nav.factory("data",function () {
+   return {token:""}
+});
+nav.controller('nav', function nav ($scope,data, $mdSidenav,$http) {
+    data.token = "jwt "+sessionStorage.getItem("jwt_token");
     if(!sessionStorage.getItem("jwt_token")){
         window.location.replace("login");
     }else{
@@ -12,7 +15,7 @@ nav.controller('nav', function nav ($scope, $mdSidenav,$http) {
             url: '/api/me',
             headers: {
                 "Content-type":"application/json",
-                "Authorization":$scope.token
+                "Authorization":data.token
             }
         }).then(function success(response) {
         }, function error(error) {
@@ -29,7 +32,7 @@ nav.controller('nav', function nav ($scope, $mdSidenav,$http) {
         url: '/api/nav_items',
         headers: {
             "Content-type":"application/json",
-            "Authorization":$scope.token
+            "Authorization":data.token
         }
     }).then(function success(response) {
         $scope.nav_items = response.data;
@@ -44,6 +47,10 @@ nav.config(function ($routeProvider) {
     when('/logout', {
         template: '',
         controller: 'logout'
+    }).
+    when('/users', {
+        templateUrl: 'views/users.html',
+        controller: 'users'
     })
 
     // otherwise({
@@ -55,3 +62,5 @@ nav.controller('logout', function ($scope) {
     sessionStorage.removeItem("jwt_token");
     window.location.replace("login")
 });
+
+nav.controller('users', Users);

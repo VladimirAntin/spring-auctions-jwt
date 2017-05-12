@@ -1,5 +1,6 @@
 package org.auctions.sf57.controllers;
 
+import org.auctions.sf57.dto.UserDTO;
 import org.auctions.sf57.entity.User;
 import org.auctions.sf57.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import io.jsonwebtoken.Claims;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,28 +29,32 @@ public class UserController {
 
     @SuppressWarnings("unchecked")
     @GetMapping(value = "/users")
-    public ResponseEntity<List<User>> getAllUsers(final HttpServletRequest request){
+    public ResponseEntity<List<UserDTO>> getAllUsers(final HttpServletRequest request){
     	final Claims claims = (Claims) request.getAttribute("claims");
     	String role = (String)claims.get("role");
         if(role.equals("admin")){
-            return new ResponseEntity<List<User>>(userService.findAll(), HttpStatus.OK);    		
+            List<UserDTO> users = new ArrayList<>();
+            for (User user:userService.findAll()) {
+                users.add(new UserDTO(user));
+            }
+            return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
     	}
-        return new ResponseEntity<List<User>>(HttpStatus.UNAUTHORIZED);    		
+        return new ResponseEntity<List<UserDTO>>(HttpStatus.UNAUTHORIZED);
     }
 
     @SuppressWarnings("unchecked")
     @GetMapping(value = "/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") long id,final HttpServletRequest request){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") long id,final HttpServletRequest request){
         final Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
         if(role.equals("admin")){
             User user = userService.findOne(id);
             if(user==null){
-                return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<User>(user, HttpStatus.OK);
+            return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
         }
-        return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<UserDTO>(HttpStatus.UNAUTHORIZED);
     }
 
     @SuppressWarnings("unchecked")

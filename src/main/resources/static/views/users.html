@@ -1,0 +1,47 @@
+<div class="md-padding" ng-cloak>
+    <div>
+        <div layout="row">
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>Search</label>
+                <input type="text" ng-model="search">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>Roles</label>
+                <md-select ng-model="selectedRole" md-selected-text="getSelectedRole()">
+                    <md-optgroup label="Roles">
+                        <md-option value="{{role.value}}" ng-repeat="role in user_roles">{{role.name}}</md-option>
+                    </md-optgroup>
+                </md-select>
+            </md-input-container>
+        </div>
+    </div>
+</div>
+
+<table class="responsive-table">
+    <thead>
+    <tr>
+        <th ng-repeat="td in users_head_items">
+            <md-button md-no-ink data-ng-click="sort(td.name)">
+                {{td.name}} <md-icon ng-bind={{"td.icon"}}></md-icon>
+            </md-button>
+        </th>
+        <th><md-icon ng-bind="'arrow_drop_down'"></md-icon></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="user in users |orderBy:orderByHead |filter:search |filter:{role:selectedRole} ">
+        <td><md-button href={{"#/users/"+user.id}}> {{user.id}}</md-button></td>
+        <td>{{user.name}}</td>
+        <td><md-button class="md-raised md-primary users-email" href={{"#/users/"+user.id}}> {{user.email}}</md-button></td>
+        <td>{{user.address}}</td>
+        <td>{{user.phone}}</td>
+        <td>{{user.role}}</td>
+        <td>
+            <md-button class="md-fab" ng-click="delete_user(user)">
+                <md-icon ng-bind="'delete'"></md-icon>
+                <md-tooltip>Delete user</md-tooltip>
+            </md-button>
+        </td>
+    </tr>
+    </tbody>
+</table>

@@ -1,6 +1,7 @@
 package org.auctions.sf57.controllers;
 
 import io.jsonwebtoken.Claims;
+import org.auctions.sf57.dto.UserDTO;
 import org.auctions.sf57.entity.User;
 import org.auctions.sf57.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,15 @@ public class ApiController {
 
     @SuppressWarnings("unchecked")
     @GetMapping(value = "/me")
-    public ResponseEntity<User> me(final HttpServletRequest request){
+    public ResponseEntity<UserDTO> me(final HttpServletRequest request){
         final Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
         if(role!=null){
             User user = userService.findOne(Long.parseLong(claims.getSubject()));
             //DTO
-            return new ResponseEntity<User>(user, HttpStatus.OK);
+            return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
         }
-        return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<UserDTO>(HttpStatus.UNAUTHORIZED);
     }
     @SuppressWarnings("unchecked")
     @GetMapping(value = "/nav_items")
