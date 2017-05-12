@@ -10,53 +10,53 @@
 </head>
 <body ng-app="app">
 
-    <div id="login" ng-controller="login" ng-cloak>
-        <md-content class="form-login">
-            <form name="login_form">
-                <div layout-gt-sm="row">
-                    <md-input-container class="md-block" flex-gt-sm>
-                        <label>Email</label>
-                        <input autofocus required ng-model="user.username" ng-change="change_inputs(login_form)"
-                               minlength="6" maxlength="30" md-maxlength="30" ng-pattern="/^.+@.+\..+$/" />
-                        <div ng-messages="login_form.username.$error" role="alert">
-                            <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">
-                                {{data.error_username}}
-                            </div>
+<div id="login" ng-controller="login" ng-cloak>
+    <md-content class="form-login">
+        <form name="login_form">
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Email</label>
+                    <input autofocus required ng-model="user.username" ng-change="change_inputs(login_form)"
+                           minlength="6" maxlength="30" md-maxlength="30" ng-pattern="/^.+@.+\..+$/" />
+                    <div ng-messages="login_form.username.$error" role="alert">
+                        <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">
+                            {{data.error_username}}
                         </div>
-                    </md-input-container>
-                </div>
+                    </div>
+                </md-input-container>
+            </div>
 
-                <div layout-gt-sm="row">
-                    <md-input-container class="md-block" flex-gt-sm>
-                        <label>Password</label>
-                        <input required ng-model="user.password" ng-change="change_inputs(login_form)"
-                               type={{data.show_pass}} maxlength="10" md-maxlength="10"  />
-                        <div ng-messages="login_form.password.$error" role="alert">
-                            <div ng-message-exp="['required' ,'maxlength']">
-                                {{data.error_password}}
-                            </div>
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>Password</label>
+                    <input required ng-model="user.password" ng-change="change_inputs(login_form)"
+                           type={{data.show_pass}} maxlength="10" md-maxlength="10"  />
+                    <div ng-messages="login_form.password.$error" role="alert">
+                        <div ng-message-exp="['required' ,'maxlength']">
+                            {{data.error_password}}
                         </div>
-                    </md-input-container>
-                    <md-input-container class="md-block" flex-gt-sm>
-                        <md-switch ng-click="view_pass()">{{data.show_pass=="text" ? "Show" : "Hide"}}</md-switch>
-                    </md-input-container>
-                </div>
-            </form>
+                    </div>
+                </md-input-container>
+            </div>
+            <md-input-container class="md-block" flex-gt-sm>
+                <md-switch ng-click="view_pass()">{{data.show_pass=="text" ? "Show" : "Hide"}}</md-switch>
+            </md-input-container>
+            <md-button ng-click="send(login_form)" class="md-raised md-primary" ng-disabled="data.btn_login">
+                Login
+            </md-button>
+        </form>
 
-                <md-button ng-click="send(login_form)" class="md-raised md-primary" ng-disabled="data.btn_login">
-                    Login
-                </md-button>
-            <p>{{data.error_login}}</p>
-        </md-content>
-    </div>
+        <p>{{data.error_login}}</p>
+    </md-content>
+</div>
 
 
-    <script src="js/angular.js"></script>
-    <script src="js/angular-route.js"></script>
-    <script src="js/angular-animate.js"></script>
-    <script src="js/angular-aria.js"></script>
-    <script src="js/angular-message.js"></script>
-    <script src="js/angular-material.js"></script>
-    <script src="ex_js/login/login.js"></script>
+<script src="js/angular.js"></script>
+<script src="js/angular-route.js"></script>
+<script src="js/angular-animate.js"></script>
+<script src="js/angular-aria.js"></script>
+<script src="js/angular-message.js"></script>
+<script src="js/angular-material.js"></script>
+<script src="ex_js/login/login.js"></script>
 </body>
 </html>

@@ -5,15 +5,14 @@ import org.auctions.sf57.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.jsonwebtoken.Claims;
 
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -53,14 +52,10 @@ public class UserController {
     }
 
     @SuppressWarnings("unchecked")
-    @GetMapping(value = "/me")
-    public ResponseEntity<User> me(final HttpServletRequest request){
-        final Claims claims = (Claims) request.getAttribute("claims");
-        String role = (String)claims.get("role");
-        if(role!=null){
-            User user = userService.findByEmail(claims.getSubject());
-            return new ResponseEntity<User>(user, HttpStatus.OK);
-        }
-        return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+    @DeleteMapping(value = "/users/{id}")
+    public ResponseEntity deleteUserById(@PathVariable("id") long id,final HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
 }

@@ -3,22 +3,19 @@
  */
 var nav = angular.module('nav', ['ngMaterial','ngRoute']);
 nav.controller('nav', function nav ($scope, $mdSidenav,$http) {
+    $scope.token = "jwt "+sessionStorage.getItem("jwt_token");
     if(!sessionStorage.getItem("jwt_token")){
         window.location.replace("login");
     }else{
-        var token = "jwt "+sessionStorage.getItem("jwt_token");
-        console.log(token);
         $http({
             method: 'GET',
             url: '/api/me',
             headers: {
-                "Content-typ":"application/json",
-                "Authorization":token
+                "Content-type":"application/json",
+                "Authorization":$scope.token
             }
         }).then(function success(response) {
-            console.log(JSON.stringify(response));
         }, function error(error) {
-            console.log(JSON.stringify(error));
             sessionStorage.removeItem("jwt_token");
             window.location.replace("login");
         });
@@ -26,12 +23,20 @@ nav.controller('nav', function nav ($scope, $mdSidenav,$http) {
     $scope.openLeftMenu = function() {
         $mdSidenav('left').toggle();
     };
-    $scope.navItems = [
-        {href:"#/home", name:"Home", icon:"home"},
-        {href:"#/users", name:"Users", icon:"group"},
-        {href:"#/profile", name:"Profile", icon:"person"},
-        {href:"#/logout", name:"Logout", icon:"input"}
-    ]
+
+    $http({
+        method: 'GET',
+        url: '/api/nav_items',
+        headers: {
+            "Content-type":"application/json",
+            "Authorization":$scope.token
+        }
+    }).then(function success(response) {
+        $scope.nav_items = response.data;
+    }, function error(error) {
+        sessionStorage.removeItem("jwt_token");
+        window.location.replace("login");
+    });
 });
 
 nav.config(function ($routeProvider) {

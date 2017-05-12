@@ -31,7 +31,7 @@ public class AuthController {
         if (user==null) {
             throw new ServletException("Invalid login");
         }
-        return new LoginResponse(Jwts.builder().setSubject(user.getEmail())
+        return new LoginResponse(Jwts.builder().setSubject(String.valueOf(user.getId()))
             .claim("role", user.getRole()).setIssuedAt(new Date()).setExpiration(getExpirationDate())
             .signWith(SignatureAlgorithm.HS256, "secretkey").compact());
     }

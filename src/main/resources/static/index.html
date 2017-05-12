@@ -17,7 +17,7 @@
 			</div>
 		</md-toolbar>
 		<md-sidenav md-component-id="left" class="md-sidenav-left">
-			<p ng-repeat="x in navItems">
+			<p ng-repeat="x in nav_items">
 				<md-button ng-click="openLeftMenu()" href={{x.href}}>
 					<md-icon ng-bind="x.icon"></md-icon>
 					<md-tooltip>{{x.name}}</md-tooltip>

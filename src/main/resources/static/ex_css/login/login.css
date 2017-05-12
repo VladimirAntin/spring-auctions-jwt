@@ -1,8 +1,29 @@
-
+#login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-image: url(../../images/auctions.png);
+    background-size: cover;
+    background-position: center;
+}
 .form-login{
-    padding: 10% 25% 0 25%;
+    width: 50%;
+    padding: 2.5em;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-login p{
     color: red;
 }
+.layout-gt-sm-row{
+    width: 50%;
+ }
+ form{
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+ }
