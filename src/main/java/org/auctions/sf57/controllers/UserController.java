@@ -27,41 +27,58 @@ public class UserController {
     @Autowired
     private UserServiceInterface userService;
 
-    @SuppressWarnings("unchecked")
+    private String ADMIN = "admin";
+
     @GetMapping(value = "/users")
     public ResponseEntity<List<UserDTO>> getAllUsers(final HttpServletRequest request){
-    	final Claims claims = (Claims) request.getAttribute("claims");
-    	String role = (String)claims.get("role");
-        if(role.equals("admin")){
-            List<UserDTO> users = new ArrayList<>();
-            for (User user:userService.findAll()) {
-                users.add(new UserDTO(user));
-            }
-            return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
-    	}
-        return new ResponseEntity<List<UserDTO>>(HttpStatus.UNAUTHORIZED);
+        List<UserDTO> users = new ArrayList<>();
+        for (User user:userService.findAll()) {
+            users.add(new UserDTO(user));
+        }
+        return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
     }
 
-    @SuppressWarnings("unchecked")
     @GetMapping(value = "/users/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") long id,final HttpServletRequest request){
-        final Claims claims = (Claims) request.getAttribute("claims");
-        String role = (String)claims.get("role");
-        if(role.equals("admin")){
-            User user = userService.findOne(id);
-            if(user==null){
-                return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
+        User user = userService.findOne(id);
+        if(user==null){
+            return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<UserDTO>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @PostMapping(value = "/users")
+    public ResponseEntity<UserDTO> post_user(@RequestBody UserDTO userDTO,final HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        String role = (String)claims.get("role");
+        if(role.equals(ADMIN)){
+            User user = null;
+            try{
+                user = userService.save(new User(userDTO));
+                return new ResponseEntity<UserDTO>(new UserDTO(user),HttpStatus.CREATED);
+            }catch (Exception e){
+                return new ResponseEntity<UserDTO>(HttpStatus.CONFLICT); //409
+            }
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
     @SuppressWarnings("unchecked")
     @DeleteMapping(value = "/users/{id}")
     public ResponseEntity deleteUserById(@PathVariable("id") long id,final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        String role = (String)claims.get("role");
+        if(role.equals(ADMIN)){
+            User user = userService.findOne(id);
+            if(user.getEmail().equals(claims.getSubject())){
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+            userService.remove(id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
 }

@@ -17,10 +17,12 @@ nav.controller('nav', function nav ($scope,data, $mdSidenav,$http) {
                 "Content-type":"application/json",
                 "Authorization":data.token
             }
-        }).then(function success(response) {
-        }, function error(error) {
-            sessionStorage.removeItem("jwt_token");
-            window.location.replace("login");
+        }).then(function done(response) {
+        },function error(response) {
+            if (response.status >= 400) {
+                sessionStorage.removeItem("jwt_token");
+                window.location.replace("login");
+            }
         });
     }
     $scope.openLeftMenu = function() {
@@ -34,11 +36,15 @@ nav.controller('nav', function nav ($scope,data, $mdSidenav,$http) {
             "Content-type":"application/json",
             "Authorization":data.token
         }
-    }).then(function success(response) {
-        $scope.nav_items = response.data;
-    }, function error(error) {
-        sessionStorage.removeItem("jwt_token");
-        window.location.replace("login");
+    }).then(function(response) {
+        if(response.status==200){
+            $scope.nav_items = response.data;
+        }
+    },function error(response) {
+        if (response.status >= 400) {
+            sessionStorage.removeItem("jwt_token");
+            window.location.replace("login");
+        }
     });
 });
 
@@ -51,8 +57,11 @@ nav.config(function ($routeProvider) {
     when('/users', {
         templateUrl: 'views/users.html',
         controller: 'users'
+    }).
+    when('/users/add', {
+        templateUrl: 'views/users/add_user.html',
+        controller: 'add_user'
     })
-
     // otherwise({
     //     redirectTo: '/home'
     // });
@@ -64,3 +73,4 @@ nav.controller('logout', function ($scope) {
 });
 
 nav.controller('users', Users);
+nav.controller('add_user', Add_users);

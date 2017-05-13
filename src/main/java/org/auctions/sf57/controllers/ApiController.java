@@ -3,6 +3,7 @@ package org.auctions.sf57.controllers;
 import io.jsonwebtoken.Claims;
 import org.auctions.sf57.dto.UserDTO;
 import org.auctions.sf57.entity.User;
+import org.auctions.sf57.security.entity.NavItem;
 import org.auctions.sf57.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,13 +27,16 @@ public class ApiController {
     @Autowired
     private UserServiceInterface userService;
 
+    private String ADMIN = "admin";
+    private String OWNER = "admin";
+
     @SuppressWarnings("unchecked")
     @GetMapping(value = "/me")
     public ResponseEntity<UserDTO> me(final HttpServletRequest request){
         final Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
         if(role!=null){
-            User user = userService.findOne(Long.parseLong(claims.getSubject()));
+            User user = userService.findByEmail(claims.getSubject());
             //DTO
             return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
         }
@@ -43,34 +47,23 @@ public class ApiController {
     public ResponseEntity<List<NavItem>> navItems(final HttpServletRequest request){
         final Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
+        if(role==null){
+            return new ResponseEntity<List<NavItem>>(HttpStatus.UNAUTHORIZED);
+        }
         List<NavItem> navItems = new ArrayList<>();
         navItems.add(new NavItem("#/home","Home","home"));
         navItems.add(new NavItem("#/auctions","Auctions","shopping cart"));
-        if(role.equals("admin")){
+        if(role.equals(ADMIN)){
             navItems.add(new NavItem("#/items","Items","list"));
             navItems.add(new NavItem("#/users","Users","group"));
-        }else if(role.equals("owner")){
+        }else if(role.equals(OWNER)){
             navItems.add(new NavItem("#/items","Items","list"));
-        }else if(role.equals("bidder")){
         }
-        if(role!=null){
-            navItems.add(new NavItem("#/users/"+claims.getSubject(),"Profile","person"));
-            navItems.add(new NavItem("#/logout","Logout","input"));
-            return new ResponseEntity<List<NavItem>>(navItems, HttpStatus.OK);
-        }
-        return new ResponseEntity<List<NavItem>>(HttpStatus.UNAUTHORIZED);
+        navItems.add(new NavItem("#/users/"+claims.getSubject(),"Profile","person"));
+        navItems.add(new NavItem("#/logout","Logout","input"));
+        return new ResponseEntity<List<NavItem>>(navItems, HttpStatus.OK);
     }
 
 
-    public class NavItem {
-        public String href;
-        public String name;
-        public String icon;
 
-        public NavItem(String href, String name, String icon) {
-            this.href = href;
-            this.name = name;
-            this.icon = icon;
-        }
-    }
 }

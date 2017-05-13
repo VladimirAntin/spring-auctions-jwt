@@ -1,0 +1,58 @@
+<md-content class="md-padding">
+    <form name="add_form">
+        <md-input-container class="md-block">
+            <label class="md-headline">Name and surname</label>
+            <input autofocus required ng-model="user.name" class="md-headline" ng-change="change_inputs(add_form)"
+                   maxlength="30" md-maxlength="30" />
+            <div ng-messages="add_form.name.$error" role="alert">
+                <div ng-message-exp="['required', 'maxlength']">
+                    {{data.valid.name}}
+                </div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label class="md-headline">Email</label>
+            <input required ng-model="user.email" class="md-headline" ng-change="change_inputs(add_form)"
+                   minlength="6" maxlength="30" md-maxlength="30" ng-pattern="/^.+@.+\..+$/" />
+            <div ng-messages="add_form.email.$error" role="alert">
+                <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">
+                    {{data.valid.email}}
+                </div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label class="md-headline">Password</label>
+            <input required ng-model="user.password" ng-change="change_inputs(add_form)"
+                   type="password" maxlength="10" md-maxlength="10"  />
+            <div ng-messages="add_form.password.$error" role="alert">
+                <div ng-message-exp="['required' ,'maxlength']">
+                    {{data.valid.password}}
+                </div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label class="md-headline">Address</label>
+            <input class="md-headline" ng-model="user.address">
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label class="md-headline">Phone</label>
+            <input ng-model="user.phone" class="md-headline" ng-change="change_inputs(add_form)"
+                   maxlength="30" md-maxlength="30" ng-pattern="/^\d+$/"/>
+            <div ng-messages="add_form.phone.$error" role="alert">
+                <div ng-message-exp="['maxlength','pattern']">
+                </div>
+            </div>
+        </md-input-container>
+        <div layout-gt-sm="row">
+            <md-radio-group ng-model="user.role">
+                <md-radio-button value="admin"> Admin </md-radio-button>
+                <md-radio-button value="owner"> Owner </md-radio-button>
+                <md-radio-button value="bidder"> Bidder </md-radio-button>
+            </md-radio-group>
+        </div>
+        <md-button class="md-fab md-primary" ng-click="save(add_form)" ng-disabled="data.btn_save">
+            <md-icon ng-bind="'save'"></md-icon>
+            <md-tooltip>Save</md-tooltip>
+        </md-button>
+    </form>
+</md-content>

@@ -1,6 +1,7 @@
 package org.auctions.sf57.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.auctions.sf57.dto.UserDTO;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -59,16 +60,22 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(User user) {
-        this.name = user.name;
-        this.email = user.email;
-        this.password = user.password;
-        this.picture = user.picture;
-        this.address = user.address;
-        this.phone = user.phone;
-        this.role = user.role;
-        this.auctions = user.auctions;
-        this.bids = user.bids;
+    public User(UserDTO userDTO) {
+        this.name = userDTO.getName();
+        this.email = userDTO.getEmail();
+        this.password = userDTO.getPassword();
+        this.picture = userDTO.getPicture();
+        this.address = userDTO.getAddress();
+        this.phone = userDTO.getPhone();
+        if(userDTO.getRole()=="admin"){
+            this.role = userDTO.getRole();
+        }else if(userDTO.getRole()=="owner"){
+            this.role = userDTO.getRole();
+        }else{
+            this.role="bidder";
+        }
+        this.auctions = userDTO.getAuctions();
+        this.bids = userDTO.getBids();
     }
 
     public long getId() {

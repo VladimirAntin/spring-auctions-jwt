@@ -9,7 +9,7 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
 
     $scope.users_head_items = [
         {name:"id",icon:"arrow_drop_down"},
-        {name:"name",icon:"arrow_drop_down"},
+        {name:"name and surname",icon:"arrow_drop_down"},
         {name:"email",icon:"arrow_drop_down"},
         {name:"address",icon:"arrow_drop_down"},
         {name:"phone",icon:"arrow_drop_down"},
@@ -52,9 +52,16 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
             "Content-type":"application/json",
             "Authorization":data.token
         }
-    }).then(function done(response) {
-        $scope.users = response.data;
-    }, function error(response) {
+    }).then(function(response) {
+        if(response.status==200) {
+            $scope.users = response.data;
+        }
+    },function error(response) {
+        if(response.status==401){
+            toast_message("Unauthorized, you do not have access","Ok",$mdToast);
+        }else if(response.status>=500){
+            toast_message("Server Error","Ok",$mdToast);
+        }
     });
 
     $scope.delete_user = function (user){
@@ -64,16 +71,26 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
                 .ok('Ok')
                 .cancel('Cancel');
         $mdDialog.show(confirm).then(function() {
-            indexUser = $scope.users.indexOf(user)
-            console.log("ovo je: "+indexUser);
-            $scope.users.splice(indexUser,1);
-            $mdToast.show(
-                $mdToast.simple()
-                    .textContent('User deleted')
-                    .action('OK')
-                    .highlightAction(true)
-            );
-        }, function() {
+            $http({
+                method : "DELETE",
+                url : "/api/users/"+user.id,
+                headers:{
+                    "Content-type":"application/json",
+                    "Authorization":data.token
+                }
+            }).then(function (response) {
+                if(response.status ==204){
+                    indexUser = $scope.users.indexOf(user);
+                    $scope.users.splice(indexUser,1);
+                    toast_message("User deleted!","Ok",$mdToast);
+                }
+            },function error(response) {
+                if(response.status==401){
+                    toast_message("Unauthorized, it is your account","Ok",$mdToast);
+                }else if(response.status>=500){
+                    toast_message("Server Error","Ok",$mdToast);
+                }
+            });
         });
     };
 };
