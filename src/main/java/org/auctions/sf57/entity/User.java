@@ -60,10 +60,9 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(UserDTO userDTO) {
+    public User fromDTO(UserDTO userDTO) {
         this.name = userDTO.getName();
         this.email = userDTO.getEmail();
-//        this.password = userDTO.getPassword();
         this.picture = userDTO.getPicture();
         this.address = userDTO.getAddress();
         this.phone = userDTO.getPhone();
@@ -74,6 +73,7 @@ public class User implements Serializable {
         }else{
             this.role="bidder";
         }
+        return this;
     }
 
     public long getId() {

@@ -1,3 +1,12 @@
 .users-email{
     text-transform: none;
 }
+
+/*dialog password*/
+
+.dialog_password{
+    margin: 5em;
+}
+.dialog_password .md-block{
+    width: 35em;
+}

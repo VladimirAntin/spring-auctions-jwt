@@ -7,11 +7,16 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
         show:{
             disable_input:true,
             btn_edit:false,
-            btn_delete:false
+            btn_delete:false,
+            btn_password:false
         },
         btn_edit:{
             icon:"edit_mode",
             tooltip:"Upadate user"
+        },
+        btn_password:{
+            icon:"lock",
+            tooltip:"Change password"
         }
     };
     $http({
@@ -39,9 +44,11 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
             if($scope.me!=null){
                 if($scope.me.email==$scope.user.email){
                     $scope.data.show.btn_edit=true;
+                    $scope.data.show.btn_password=true;
                     $scope.data.show.btn_delete=false;
                 }else if($scope.me.role=="admin"){
                     $scope.data.show.btn_edit=true;
+                    $scope.data.show.btn_password=true;
                     if($scope.me.email==$scope.user.email){
                         $scope.data.show.btn_delete=false;
                     }else{
@@ -49,6 +56,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                     }
                 }else{
                     $scope.data.show.btn_edit=false;
+                    $scope.data.show.btn_password=false;
                     $scope.data.show.btn_delete=false;
                 }
             }
@@ -116,4 +124,52 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
             toast_message("Form is not valid","Ok",$mdToast);
         }
     };
+    
+    $scope.update_password = function () {
+        $mdDialog.show({
+            templateUrl: 'views/users/change_password_dialog.html',
+            parent: angular.element(document.body),
+            clickOutsideToClose:true,
+            locals:{user:$scope.user},
+            controller: ChangePasswordController
+        });
+        function ChangePasswordController($scope,data,$mdDialog,user,$routeParams,$mdToast) {
+            $scope.user =user;
+            $scope.btn_save_password = false;
+            $scope.save_password = function() {
+                $http({
+                    method: 'PATCH',
+                    url: '/api/users/'+$routeParams.userId+"/password",
+                    headers: {
+                        "Content-type":"application/json",
+                        "Authorization":data.token
+                    },
+                    data:$scope.user
+                }).then(function(response) {
+                    if(response.status==200){
+                        $scope.user = response.data;
+                        toast_message("Password was changed!","Ok",$mdToast);
+                        $mdDialog.hide();
+                    }
+                },function (response) {
+                    if(response.status==400){
+                        toast_message("Bad request","Ok",$mdToast);
+                    }else if(response.status>=500){
+                        toast_message("Server error","Ok",$mdToast);
+                    }
+                });
+            };
+            $scope.cancel = function() {
+                $mdDialog.hide();
+            };
+            $scope.check_password = function(change_password) {
+                if(change_password.$valid){
+                    $scope.btn_save_password = true;
+                }else{
+                    $scope.btn_save_password = false;
+                }
+            };
+        }
+
+    }
 }

@@ -43,6 +43,10 @@
                         <md-icon ng-bind="data.btn_edit.icon"></md-icon>
                         <md-tooltip>{{data.btn_edit.tooltip}}</md-tooltip>
                     </md-button>
+                    <md-button class="md-fab md-primary" ng-click="update_password()" ng-show="data.show.btn_password">
+                        <md-icon ng-bind="data.btn_password.icon"></md-icon>
+                        <md-tooltip>{{data.btn_password.tooltip}}</md-tooltip>
+                    </md-button>
                     <md-button class="md-fab" ng-click="openDeleteMode(user)" ng-show="data.show.btn_delete">
                         <md-icon ng-bind="'delete'"></md-icon>
                         <md-tooltip>Delete user</md-tooltip>
