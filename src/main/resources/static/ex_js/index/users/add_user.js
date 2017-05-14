@@ -62,7 +62,8 @@ function Add_users($scope,data,$http,$mdToast) {
             }, function error(response) {
                 if(response.status==409){
                     $scope.data.valid.email = "Email is exist.";
-                    toast_message("Conflict, email is exist","Ok",$mdToast);
+                    toast_message("Conflict, email is exist or form is not valid","Ok",$mdToast);
+
                 }
             });
         }

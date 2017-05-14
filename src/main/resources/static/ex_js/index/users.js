@@ -59,6 +59,7 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
     },function error(response) {
         if(response.status==401){
             toast_message("Unauthorized, you do not have access","Ok",$mdToast);
+            window.location.replace("/home")
         }else if(response.status>=500){
             toast_message("Server Error","Ok",$mdToast);
         }
@@ -93,5 +94,5 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
             });
         });
     };
-};
+}
 

@@ -31,11 +31,16 @@ public class UserController {
 
     @GetMapping(value = "/users")
     public ResponseEntity<List<UserDTO>> getAllUsers(final HttpServletRequest request){
-        List<UserDTO> users = new ArrayList<>();
-        for (User user:userService.findAll()) {
-            users.add(new UserDTO(user));
+        Claims claims = (Claims) request.getAttribute("claims");
+        String role = (String)claims.get("role");
+        if(role.equals(ADMIN)){
+            List<UserDTO> users = new ArrayList<>();
+            for (User user:userService.findAll()) {
+                users.add(new UserDTO(user));
+            }
+            return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
         }
-        return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
+        return new ResponseEntity<List<UserDTO>>(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping(value = "/users/{id}")
@@ -55,6 +60,12 @@ public class UserController {
         String role = (String)claims.get("role");
         if(role.equals(ADMIN)){
             User user = null;
+            if(userDTO.getEmail().length()>30 || userDTO.getEmail().length()<1 ||
+                userDTO.getName().length()>30 || userDTO.getName().length()<1 ||
+                userDTO.getPassword().length()<1 || userDTO.getPassword().length()>10 ||
+                userDTO.getPhone().length()>30){
+                return new ResponseEntity<UserDTO>(HttpStatus.CONFLICT); //409
+            }
             try{
                 user = userService.save(new User(userDTO));
                 return new ResponseEntity<UserDTO>(new UserDTO(user),HttpStatus.CREATED);
@@ -72,7 +83,7 @@ public class UserController {
         String role = (String)claims.get("role");
         if(role.equals(ADMIN)){
             User user = userService.findOne(id);
-            if(user.getEmail().equals(claims.getSubject())){
+            if(user.getId()==Long.parseLong(claims.getSubject())){
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
             userService.remove(id);
@@ -80,5 +91,40 @@ public class UserController {
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
-
+    @SuppressWarnings("unchecked")
+    @PutMapping(value = "/users/{id}")
+    public ResponseEntity updateUserById(@PathVariable("id") long id, @RequestBody UserDTO userDTO,final HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        String role = (String)claims.get("role");
+        User user = userService.findOne(id);
+        if(user==null){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        if (userDTO.getName() != null && userDTO.getName().length()<=30 && userDTO.getName().length()>=1) {
+            user.setName(userDTO.getName());
+        }
+        if(userDTO.getPhone() != null && userDTO.getPhone().length()<=30) {
+            boolean phone;
+            try{
+                long phoneCheck = Long.parseLong(userDTO.getPhone());
+                phone = true;
+            }catch (Exception e){
+                phone = false;
+            }
+            if(phone){
+                user.setPhone(userDTO.getPhone());
+            }else if(userDTO.getPhone().equals("")){
+                user.setPhone("");
+            }
+        }
+        user.setAddress(userDTO.getAddress());
+        if(role.equals(ADMIN)){
+            userService.save(user);
+            return new ResponseEntity(HttpStatus.OK);
+        }else if(Long.parseLong(claims.getSubject())==id){
+            userService.save(user);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
 }

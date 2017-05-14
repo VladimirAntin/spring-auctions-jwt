@@ -36,7 +36,7 @@ public class ApiController {
         final Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
         if(role!=null){
-            User user = userService.findByEmail(claims.getSubject());
+            User user = userService.findOne(Long.parseLong(claims.getSubject()));
             //DTO
             return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
         }

@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+
+/**
+ * @GitHub https://github.com/VladimirAntin/jwt-angular-spring/blob/master/src/main/java/com/nibado/example/jwtangspr/UserController.java
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -31,7 +35,7 @@ public class AuthController {
         if (user==null) {
             throw new ServletException("Invalid login");
         }
-        return new LoginResponse(Jwts.builder().setSubject(user.getEmail())
+        return new LoginResponse(Jwts.builder().setSubject(String.valueOf(user.getId()))
             .claim("role", user.getRole()).setIssuedAt(new Date()).setExpiration(getExpirationDate())
             .signWith(SignatureAlgorithm.HS256, "secretkey").compact());
     }

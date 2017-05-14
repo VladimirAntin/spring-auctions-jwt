@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Created by vladimir_antin on 8.5.17..
+ * @GitHub https://github.com/VladimirAntin/jwt-angular-spring
  */
 @SpringBootApplication  // same as @Configuration @EnableAutoConfiguration @ComponentScan
 public class AuctionsApp {

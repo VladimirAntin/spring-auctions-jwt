@@ -34,7 +34,7 @@ public class User implements Serializable {
     private String email;
 
     @Column(name = "password", unique = false, nullable = false)
-    @Size(max = 30)
+    @Size(max = 10)
     private String password;
 
     @Column(name = "picture", unique = false, nullable = true, columnDefinition = "TEXT")
@@ -63,7 +63,7 @@ public class User implements Serializable {
     public User(UserDTO userDTO) {
         this.name = userDTO.getName();
         this.email = userDTO.getEmail();
-        this.password = userDTO.getPassword();
+//        this.password = userDTO.getPassword();
         this.picture = userDTO.getPicture();
         this.address = userDTO.getAddress();
         this.phone = userDTO.getPhone();
@@ -74,8 +74,6 @@ public class User implements Serializable {
         }else{
             this.role="bidder";
         }
-        this.auctions = userDTO.getAuctions();
-        this.bids = userDTO.getBids();
     }
 
     public long getId() {
