@@ -43,13 +43,11 @@
                 </div>
             </div>
         </md-input-container>
-        <div layout-gt-sm="row">
-            <md-radio-group ng-model="user.role">
-                <md-radio-button value="admin"> Admin </md-radio-button>
-                <md-radio-button value="owner"> Owner </md-radio-button>
-                <md-radio-button value="bidder"> Bidder </md-radio-button>
-            </md-radio-group>
-        </div>
+        <md-radio-group ng-model="user.role">
+            <md-radio-button value="admin"> Admin </md-radio-button>
+            <md-radio-button value="owner"> Owner </md-radio-button>
+            <md-radio-button value="bidder"> Bidder </md-radio-button>
+        </md-radio-group>
         <md-button class="md-fab md-primary" ng-click="save(add_form)" ng-disabled="data.btn_save">
             <md-icon ng-bind="'save'"></md-icon>
             <md-tooltip>Save</md-tooltip>

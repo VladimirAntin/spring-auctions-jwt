@@ -66,13 +66,7 @@ public class User implements Serializable {
         this.picture = userDTO.getPicture();
         this.address = userDTO.getAddress();
         this.phone = userDTO.getPhone();
-        if(userDTO.getRole()=="admin"){
-            this.role = userDTO.getRole();
-        }else if(userDTO.getRole()=="owner"){
-            this.role = userDTO.getRole();
-        }else{
-            this.role="bidder";
-        }
+        setRole(userDTO.getRole());
         return this;
     }
 
@@ -162,7 +156,13 @@ public class User implements Serializable {
     }
 
     public User setRole(String role) {
-        this.role = role;
+        if(role.equals("admin")){
+            this.role = role;
+        }else if(role.equals("owner")){
+            this.role = role;
+        }else{
+            this.role="bidder";
+        }
         return this;
     }
 }

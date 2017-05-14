@@ -118,6 +118,7 @@ public class UserController {
         }
         user.setAddress(userDTO.getAddress());
         if(role.equals(ADMIN)){
+            user.setRole(userDTO.getRole());
             userService.save(user);
             return new ResponseEntity(new UserDTO(user),HttpStatus.OK);
         }else if(Long.parseLong(claims.getSubject())==id){
@@ -127,12 +128,6 @@ public class UserController {
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
-    @SuppressWarnings("unchecked")
-    @PatchMapping(value = "/users/{id}/role")
-    public ResponseEntity updateRole(@PathVariable("id") long id, @RequestBody UserDTO userDTO,final HttpServletRequest request){
-
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-    }
     @SuppressWarnings("unchecked")
     @PatchMapping(value = "/users/{id}/password")
     public ResponseEntity<UserDTO> updatePassword(@PathVariable("id") long id, @RequestBody UserDTO userDTO,final HttpServletRequest request){
@@ -142,19 +137,20 @@ public class UserController {
         if(user==null){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        if(user.getPassword().equals(userDTO.getOldPassword()) && userDTO.getPassword()!=null
-                && userDTO.getPassword().length()>=1 && userDTO.getPassword().length()<10){
-                user.setPassword(userDTO.getPassword());
-        }else{
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
         if(role.equals(ADMIN)){
+            user.setPassword(userDTO.getPassword());
             userService.save(user);
             return new ResponseEntity(new UserDTO(user), HttpStatus.OK);
         }else if(Long.parseLong(claims.getSubject())==id){
-            userService.save(user);
-            return new ResponseEntity(new UserDTO(user), HttpStatus.OK);
+            if(user.getPassword().equals(userDTO.getOldPassword()) && userDTO.getPassword()!=null
+                    && userDTO.getPassword().length()>=1 && userDTO.getPassword().length()<10){
+                user.setPassword(userDTO.getPassword());
+                userService.save(user);
+                return new ResponseEntity(new UserDTO(user), HttpStatus.OK);
+            }
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
+
+
 }

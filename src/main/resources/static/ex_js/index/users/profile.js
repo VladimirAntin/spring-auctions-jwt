@@ -8,7 +8,8 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
             disable_input:true,
             btn_edit:false,
             btn_delete:false,
-            btn_password:false
+            btn_password:false,
+            disable_change_role:true
         },
         btn_edit:{
             icon:"edit_mode",
@@ -96,10 +97,14 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
 
     $scope.edit_mode = function (edit_forum) {
         if($scope.data.show.disable_input){
+            if($scope.me.role=="admin"){
+                $scope.data.show.disable_change_role = false;
+            }
             $scope.data.show.disable_input = false;
             $scope.data.btn_edit.icon = "save";
             $scope.data.btn_edit.tooltip = "Save";
         }else if (edit_forum.$valid){
+            console.log($scope.user.role);
             $http({
                 method: 'PUT',
                 url: '/api/users/'+$routeParams.userId,
@@ -112,6 +117,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                 if(response.status==200){
                     toast_message("User updated!","Ok",$mdToast);
                     $scope.data.show.disable_input = true;
+                    $scope.data.show.disable_change_role = true;
                     $scope.data.btn_edit.icon = "edit_mode";
                     $scope.data.btn_edit.tooltip = "Update user";
                 }
@@ -147,13 +153,12 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                     data:$scope.user
                 }).then(function(response) {
                     if(response.status==200){
-                        $scope.user = response.data;
                         toast_message("Password was changed!","Ok",$mdToast);
                         $mdDialog.hide();
                     }
                 },function (response) {
-                    if(response.status==400){
-                        toast_message("Bad request","Ok",$mdToast);
+                    if(response.status==401){
+                        toast_message("Unauthorized","Ok",$mdToast);
                     }else if(response.status>=500){
                         toast_message("Server error","Ok",$mdToast);
                     }

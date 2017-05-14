@@ -13,8 +13,12 @@
                             <input class="md-headline" ng-model="user.email" disabled>
                         </md-input-container>
                         <md-input-container class="md-block">
-                            <label class="md-headline">Role</label>
-                            <input class="md-headline" ng-model="user.role" disabled>
+                            <md-select ng-model="user.role"
+                                       ng-disabled="data.show.disable_change_role">
+                                <md-option value="admin"> Admin </md-option>
+                                <md-option value="owner"> Owner </md-option>
+                                <md-option value="bidder"> Bidder </md-option>
+                            </md-select>
                         </md-input-container>
                     </div>
                     <md-input-container class="md-block">

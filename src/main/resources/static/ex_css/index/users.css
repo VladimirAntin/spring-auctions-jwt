@@ -1,6 +1,9 @@
 .users-email{
     text-transform: none;
 }
+.layout-gt-sm-row .md-block{
+    margin-right: 5em;
+}
 
 /*dialog password*/
 
