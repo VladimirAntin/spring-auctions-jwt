@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/angular-material.css">
+    <link rel="stylesheet" href="css/table-materialize.css">
+    <title>upload</title>
+</head>
+<body>
+    <form enctype="multipart/form-data" >
+            <input type="file" name="file" accept="image/*" id="file_upload">
+    </form>
+    <script src="js/jquery.min.js"></script>
+
+    <script>
+        $('#file_upload').on('change', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                data: new FormData($('form')[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                statusCode:{
+                    200:function (response) {
+                        console.log("sve je ok");
+                    }
+                },
+                error:function (request,message,error) {
+                    console.log(message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
