@@ -43,7 +43,7 @@ public class JwtFilter extends GenericFilterBean {
                 .parseClaimsJws(token).getBody();
             request.setAttribute("claims", claims);
         }
-        catch (final SignatureException e) {
+        catch (Exception e) {
             response.sendError(401,"Invalid token.");
             return;
         //throw new ServletException("Invalid token."); //500

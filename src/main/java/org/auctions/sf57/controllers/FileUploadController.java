@@ -21,22 +21,15 @@ public class FileUploadController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/files/{filename:.+}")
+    @GetMapping("/files/{folder}/{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+    public ResponseEntity<Resource> serveFile(@PathVariable("folder") String folder,@PathVariable String filename) {
 
-        Resource file = storageService.loadAsResource(filename);
+        Resource file = storageService.loadAsResource(folder+"/"+filename);
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+file.getFilename()+"\"")
                 .body(file);
-    }
-
-    @PostMapping("/upload")
-    public ResponseEntity handleFileUpload(@RequestParam("file") MultipartFile file) {
-        System.out.println(file.getOriginalFilename());
-        storageService.store(file,"newfile.png");
-        return new ResponseEntity(HttpStatus.OK);
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

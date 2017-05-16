@@ -30,37 +30,37 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
     }).then(function(response) {
         if(response.status==200){
             $scope.user = response.data;
-        }
-    });
-    $http({
-        method: 'GET',
-        url: '/api/me',
-        headers: {
-            "Content-type":"application/json",
-            "Authorization":data.token
-        }
-    }).then(function(response) {
-        if(response.status==200){
-            $scope.me = response.data;
-            if($scope.me!=null){
-                if($scope.me.email==$scope.user.email){
-                    $scope.data.show.btn_edit=true;
-                    $scope.data.show.btn_password=true;
-                    $scope.data.show.btn_delete=false;
-                }else if($scope.me.role=="admin"){
-                    $scope.data.show.btn_edit=true;
-                    $scope.data.show.btn_password=true;
-                    if($scope.me.email==$scope.user.email){
-                        $scope.data.show.btn_delete=false;
-                    }else{
-                        $scope.data.show.btn_delete=true;
-                    }
-                }else{
-                    $scope.data.show.btn_edit=false;
-                    $scope.data.show.btn_password=false;
-                    $scope.data.show.btn_delete=false;
+            $http({
+                method: 'GET',
+                url: '/api/me',
+                headers: {
+                    "Content-type":"application/json",
+                    "Authorization":data.token
                 }
-            }
+            }).then(function(response) {
+                if(response.status==200){
+                    $scope.me = response.data;
+                    if($scope.me!=null){
+                        if($scope.me.email==$scope.user.email){
+                            $scope.data.show.btn_edit=true;
+                            $scope.data.show.btn_password=true;
+                            $scope.data.show.btn_delete=false;
+                        }else if($scope.me.role=="admin"){
+                            $scope.data.show.btn_edit=true;
+                            $scope.data.show.btn_password=true;
+                            if($scope.me.email==$scope.user.email){
+                                $scope.data.show.btn_delete=false;
+                            }else{
+                                $scope.data.show.btn_delete=true;
+                            }
+                        }else{
+                            $scope.data.show.btn_edit=false;
+                            $scope.data.show.btn_password=false;
+                            $scope.data.show.btn_delete=false;
+                        }
+                    }
+                }
+            });
         }
     });
     $scope.openDeleteMode = function (user) {
@@ -175,6 +175,27 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                 }
             };
         }
+    };
 
-    }
+    $scope.change_photo = function () {
+        $.ajax({
+            url: 'api/users/'+$scope.user.id+'/upload',
+            type: 'POST',
+            headers:{
+                "Authorization":data.token
+            },
+            data: new FormData($('form')[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            statusCode:{
+                200:function (response) {
+                    window.location.reload();
+                }
+            },
+            error:function (request,message,error) {
+                console.log(message);
+            }
+        });
+    };
 }
