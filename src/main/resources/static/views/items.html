@@ -1,0 +1,41 @@
+<div class="md-padding" ng-cloak>
+    <div>
+        <div layout="row">
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>Search</label>
+                <input type="text" ng-model="search">
+            </md-input-container>
+            <md-button class="md-fab md-primary" href="#/item/add">
+                <md-icon ng-bind="'add'"></md-icon>
+                <md-tooltip>Add item</md-tooltip>
+            </md-button>
+        </div>
+    </div>
+</div>
+
+<table class="responsive-table">
+    <thead>
+    <tr>
+        <th ng-repeat="td in items_head_items">
+            <md-button md-no-ink data-ng-click="sort(td.name)">
+                {{td.name}} <md-icon ng-bind={{"td.icon"}}></md-icon>
+            </md-button>
+        </th>
+        <th><md-icon ng-bind="'arrow_drop_down'"></md-icon></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in items |orderBy:orderByHead |filter:search">
+        <td><md-button href={{"#/items/"+item.id}}> {{item.id}}</md-button></td>
+        <td>{{item.name}}</td>
+        <td>{{item.description}}</td>
+        <td>{{item.sold}}</td>
+        <td>
+            <md-button class="md-fab" ng-click="delete_item(item)" ng-show="data.btn_delete_item">
+                <md-icon ng-bind="'delete'"></md-icon>
+                <md-tooltip>Delete item</md-tooltip>
+            </md-button>
+        </td>
+    </tr>
+    </tbody>
+</table>

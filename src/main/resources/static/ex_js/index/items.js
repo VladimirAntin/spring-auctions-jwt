@@ -1,33 +1,20 @@
 /**
- * Created by vladimir_antin on 12.5.17..
+ * Created by vladimir_antin on 17.5.17..
  */
-function Users($scope,data,$http,$mdDialog,$mdToast) {
-
-    $scope.users_head_items = [
-        {name:"id",icon:"arrow_drop_down"},
-        {name:"name and surname",icon:"arrow_drop_down"},
-        {name:"email",icon:"arrow_drop_down"},
-        {name:"address",icon:"arrow_drop_down"},
-        {name:"phone",icon:"arrow_drop_down"},
-        {name:"role",icon:"arrow_drop_down"}
-    ];
-
-    $scope.user_roles = [
-        {name:"All users",value:""},
-        {name:"Administrators",value:"admin"},
-        {name:"Owners",value:"owner"},
-        {name:"Bidder",value:"bidder"}
-    ];
-    $scope.selectedRole;
-    $scope.getSelectedRole = function() {
-        if ($scope.selectedRole !== undefined) {
-            return $scope.selectedRole.name;
-        } else {
-        }
+function Items($scope,data,$http,$mdDialog,$mdToast) {
+    $scope.data = {
+        btn_delete_item:false
     };
+    $scope.items_head_items = [
+        {name:"id",icon:"arrow_drop_down"},
+        {name:"name",icon:"arrow_drop_down"},
+        {name:"description",icon:"arrow_drop_down"},
+        {name:"sold",icon:"arrow_drop_down"}
+    ];
+
 
     $scope.sort =function (name){
-        angular.forEach($scope.users_head_items, function(value, key) {
+        angular.forEach($scope.items_head_items, function(value, key) {
             if(value.name==name){
                 if(value.icon == "arrow_drop_down"){
                     value.icon = "arrow_drop_up";
@@ -39,18 +26,19 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
             }
         });
     };
-    $scope.users = [];
+    $scope.items = [];
 
     $http({
         method : "GET",
-        url : "/api/users",
+        url : "/api/items",
         headers:{
             "Content-type":"application/json",
             "Authorization":data.token
         }
     }).then(function(response) {
         if(response.status==200) {
-            $scope.users = response.data;
+            $scope.items = response.data;
+            $scope.me_service();
         }
     },function error(response) {
         if(response.status==401){
@@ -61,25 +49,25 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
         }
     });
 
-    $scope.delete_user = function (user){
+    $scope.delete_item = function (item){
         var confirm = $mdDialog.confirm()
-                .title('Do you sure?')
-                .textContent('user with a email: "'+user.email+'" and id: "'+user.id+'" will be deleted')
-                .ok('Ok')
-                .cancel('Cancel');
+            .title('Do you sure?')
+            .textContent('item with id: "'+item.id+'" will be deleted')
+            .ok('Ok')
+            .cancel('Cancel');
         $mdDialog.show(confirm).then(function() {
             $http({
                 method : "DELETE",
-                url : "/api/users/"+user.id,
+                url : "/api/items/"+item.id,
                 headers:{
                     "Content-type":"application/json",
                     "Authorization":data.token
                 }
             }).then(function (response) {
                 if(response.status ==204){
-                    indexUser = $scope.users.indexOf(user);
-                    $scope.users.splice(indexUser,1);
-                    toast_message("User deleted!","Ok",$mdToast);
+                    indexItem = $scope.items.indexOf(user);
+                    $scope.items.splice(indexUser,1);
+                    toast_message("Item deleted!","Ok",$mdToast);
                 }
             },function error(response) {
                 if(response.status==401){
@@ -90,5 +78,28 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
             });
         });
     };
+
+
+    $scope.me_service = function () {
+        $http({
+            method: 'GET',
+            url: '/api/me',
+            headers: {
+                "Content-type":"application/json",
+                "Authorization":data.token
+            }
+        }).then(function(response) {
+            if(response.status==200){
+                $scope.me = response.data;
+                if($scope.me!=null){
+                    if($scope.me.role=="admin"){
+                        $scope.data.btn_delete_item=true;
+                    }else{
+                        $scope.data.btn_delete_item=false;
+                    }
+                }
+            }
+        });
+    }
 }
 

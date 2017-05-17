@@ -65,6 +65,10 @@ nav.config(function ($routeProvider) {
     when('/users/:userId', {
         templateUrl: 'views/users/profile.html',
         controller: 'profile'
+    }).
+    when('/items', {
+        templateUrl: 'views/items.html',
+        controller: 'items'
     })
     // otherwise({
     //     redirectTo: '/home'
@@ -79,3 +83,4 @@ nav.controller('logout', function ($scope) {
 nav.controller('users', Users);
 nav.controller('add_user', Add_users);
 nav.controller('profile', Profile);
+nav.controller('items', Items);

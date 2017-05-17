@@ -30,37 +30,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
     }).then(function(response) {
         if(response.status==200){
             $scope.user = response.data;
-            $http({
-                method: 'GET',
-                url: '/api/me',
-                headers: {
-                    "Content-type":"application/json",
-                    "Authorization":data.token
-                }
-            }).then(function(response) {
-                if(response.status==200){
-                    $scope.me = response.data;
-                    if($scope.me!=null){
-                        if($scope.me.email==$scope.user.email){
-                            $scope.data.show.btn_edit=true;
-                            $scope.data.show.btn_password=true;
-                            $scope.data.show.btn_delete=false;
-                        }else if($scope.me.role=="admin"){
-                            $scope.data.show.btn_edit=true;
-                            $scope.data.show.btn_password=true;
-                            if($scope.me.email==$scope.user.email){
-                                $scope.data.show.btn_delete=false;
-                            }else{
-                                $scope.data.show.btn_delete=true;
-                            }
-                        }else{
-                            $scope.data.show.btn_edit=false;
-                            $scope.data.show.btn_password=false;
-                            $scope.data.show.btn_delete=false;
-                        }
-                    }
-                }
-            });
+
         }
     });
     $scope.openDeleteMode = function (user) {
@@ -83,6 +53,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                 }).then(function (response) {
                     if(response.status ==204){
                         window.location.replace("#/users")
+                        $scope.me_service();
                     }
                 },function error(response) {
                     if(response.status==401){
@@ -93,6 +64,40 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                 });
             });
         }
+    };
+
+    $scope.me_service = function () {
+        $http({
+            method: 'GET',
+            url: '/api/me',
+            headers: {
+                "Content-type":"application/json",
+                "Authorization":data.token
+            }
+        }).then(function(response) {
+            if(response.status==200){
+                $scope.me = response.data;
+                if($scope.me!=null){
+                    if($scope.me.email==$scope.user.email){
+                        $scope.data.show.btn_edit=true;
+                        $scope.data.show.btn_password=true;
+                        $scope.data.show.btn_delete=false;
+                    }else if($scope.me.role=="admin"){
+                        $scope.data.show.btn_edit=true;
+                        $scope.data.show.btn_password=true;
+                        if($scope.me.email==$scope.user.email){
+                            $scope.data.show.btn_delete=false;
+                        }else{
+                            $scope.data.show.btn_delete=true;
+                        }
+                    }else{
+                        $scope.data.show.btn_edit=false;
+                        $scope.data.show.btn_password=false;
+                        $scope.data.show.btn_delete=false;
+                    }
+                }
+            }
+        });
     };
 
     $scope.edit_mode = function (edit_forum) {
@@ -191,10 +196,10 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
             statusCode:{
                 200:function (response) {
                     window.location.reload();
+                },
+                409:function (response) {
+                    toast_message("Conflict, format is not an image","Ok",$mdToast);
                 }
-            },
-            error:function (request,message,error) {
-                console.log(message);
             }
         });
     };

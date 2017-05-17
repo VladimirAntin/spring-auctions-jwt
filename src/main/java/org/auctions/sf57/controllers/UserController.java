@@ -42,10 +42,7 @@ public class UserController {
         Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
         if(role.equals(ADMIN)){
-            List<UserDTO> users = new ArrayList<>();
-            for (User user:userService.findAll()) {
-                users.add(new UserDTO(user));
-            }
+            List<UserDTO> users = Sf57Utils.usersToDTO(userService.findAll());
             return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
         }
         return new ResponseEntity<List<UserDTO>>(HttpStatus.UNAUTHORIZED);
@@ -156,16 +153,16 @@ public class UserController {
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
-    
+
     @SuppressWarnings("unchecked")
     @PostMapping(value="/users/{id}/upload")
     public ResponseEntity handleFileUpload(@PathVariable("id") long id, @RequestParam("file") MultipartFile file,final HttpServletRequest request) {
         String filename =  file.getOriginalFilename();
-        if(Sf57Utils.contains(filename,".png") &&
-            Sf57Utils.contains(filename,".jpg") &&
-            Sf57Utils.contains(filename,".jpeg") &&
-            Sf57Utils.contains(filename,".gif")){
-            return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+        if(!Sf57Utils.contains(filename,".png") &&
+            !Sf57Utils.contains(filename,".jpg") &&
+            !Sf57Utils.contains(filename,".jpeg") &&
+            !Sf57Utils.contains(filename,".gif")){
+            return new ResponseEntity(HttpStatus.CONFLICT);
         }
         Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");

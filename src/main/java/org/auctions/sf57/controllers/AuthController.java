@@ -58,7 +58,7 @@ public class AuthController {
     public Date getExpirationDate(){
         Calendar cal = Calendar.getInstance(); // creates calendar
         cal.setTime(new Date()); // sets calendar time/date
-        cal.add(Calendar.HOUR_OF_DAY, 24); // adds one hour
+        cal.add(Calendar.HOUR_OF_DAY, 8); // adds one hour
         return cal.getTime(); // returns new date object, one hour in the future
     }
 }

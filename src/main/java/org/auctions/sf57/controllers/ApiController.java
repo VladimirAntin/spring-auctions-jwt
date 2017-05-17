@@ -28,7 +28,7 @@ public class ApiController {
     private UserServiceInterface userService;
 
     private String ADMIN = "admin";
-    private String OWNER = "admin";
+    private String OWNER = "owner";
 
     @SuppressWarnings("unchecked")
     @GetMapping(value = "/me")
