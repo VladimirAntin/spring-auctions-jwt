@@ -30,7 +30,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
     }).then(function(response) {
         if(response.status==200){
             $scope.user = response.data;
-
+            $scope.me_service();
         }
     });
     $scope.openDeleteMode = function (user) {
@@ -197,9 +197,6 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                 200:function (response) {
                     window.location.reload();
                 },
-                409:function (response) {
-                    toast_message("Conflict, format is not an image","Ok",$mdToast);
-                }
             }
         });
     };
