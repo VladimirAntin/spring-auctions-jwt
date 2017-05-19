@@ -1,16 +1,18 @@
 package org.auctions.sf57.controllers;
 
+import io.jsonwebtoken.Claims;
 import org.auctions.sf57.config.Sf57Utils;
 import org.auctions.sf57.dto.ItemDTO;
+import org.auctions.sf57.dto.UserDTO;
 import org.auctions.sf57.entity.Item;
+import org.auctions.sf57.entity.User;
 import org.auctions.sf57.service.ItemServiceInterface;
+import org.auctions.sf57.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -23,25 +25,115 @@ import java.util.List;
 @RequestMapping(value = "api")
 public class ItemController {
 
+    private String ADMIN = "admin";
+    private String OWNER = "owner";
     @Autowired
     private ItemServiceInterface itemService;
 
-    @SuppressWarnings("unchecked")
+    @Autowired
+    private StorageService storageService;
+
     @GetMapping(value = "/items")
     public ResponseEntity<List<ItemDTO>> getAllItems(final HttpServletRequest request){
         List<ItemDTO> itemsDTO = Sf57Utils.itemsToDTO(itemService.findAll());
         return new ResponseEntity<List<ItemDTO>>(itemsDTO, HttpStatus.OK);
-
     }
 
     @GetMapping(value="/items/{id}")
     public ResponseEntity<ItemDTO> getItemById(@PathVariable("id") long id,final HttpServletRequest request){
         Item item = itemService.findOne(id);
-
+        if(item==null){
+            return new ResponseEntity<ItemDTO>(HttpStatus.NOT_FOUND);
+        }
         if (item==null){
             return new ResponseEntity<ItemDTO>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<ItemDTO>(new ItemDTO(item),HttpStatus.OK);
     }
 
+    @SuppressWarnings("unchecked")
+    @DeleteMapping(value = "/items/{id}")
+    public ResponseEntity removeItemById(@PathVariable("id") long id,HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        String role = (String)claims.get("role");
+        Item item = itemService.findOne(id);
+        if(item==null){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        if(role.equals(ADMIN) || (role.equals(OWNER) && !item.isSold())){
+            itemService.remove(id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+
+    @SuppressWarnings("unchecked")
+    @PostMapping(value = "/items")
+    public ResponseEntity<ItemDTO> post_user(@RequestBody ItemDTO itemDTO, final HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        String role = (String)claims.get("role");
+        if(role.equals(ADMIN) || role.equals(OWNER)){
+            Item item = null;
+            if(!Sf57Utils.validate(itemDTO.getName(),1,30)){
+                return new ResponseEntity<ItemDTO>(HttpStatus.CONFLICT);
+            }
+            try{
+                itemDTO.setSold(false);
+                item = itemService.save(new Item().fromDTO(itemDTO));
+                return new ResponseEntity<ItemDTO>(new ItemDTO(item),HttpStatus.CREATED);
+            }catch (Exception e){
+                return new ResponseEntity<ItemDTO>(HttpStatus.CONFLICT); //409
+            }
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+
+    @SuppressWarnings("unchecked")
+    @PutMapping(value = "/items/{id}")
+    public ResponseEntity<ItemDTO> updateUserById(@PathVariable("id") long id, @RequestBody ItemDTO itemDTO,final HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        String role = (String)claims.get("role");
+        Item item = itemService.findOne(id);
+        if(item==null){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        if (Sf57Utils.validate(itemDTO.getName(),1,30)) {
+            item.setName(itemDTO.getName());
+        }
+        item.setDescription(itemDTO.getDescription());
+        if(role.equals(ADMIN) || (role.equals(OWNER) && !item.isSold())){
+            itemService.save(item);
+            return new ResponseEntity<ItemDTO>(new ItemDTO(item),HttpStatus.OK);
+        }else if(Long.parseLong(claims.getSubject())==id){
+            itemService.save(item);
+            return new ResponseEntity<ItemDTO>(new ItemDTO(item),HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+
+    @SuppressWarnings("unchecked")
+    @PostMapping(value="/items/{id}/upload")
+    public ResponseEntity handleFileUpload(@PathVariable("id") long id, @RequestParam("file") MultipartFile file, final HttpServletRequest request) {
+        String filename =  file.getOriginalFilename();
+        if(!Sf57Utils.contains(filename,".png") &&
+                !Sf57Utils.contains(filename,".jpg") &&
+                !Sf57Utils.contains(filename,".jpeg") &&
+                !Sf57Utils.contains(filename,".gif")){
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
+        Claims claims = (Claims) request.getAttribute("claims");
+        String role = (String)claims.get("role");
+        Item item = itemService.findOne(id);
+        if(item==null){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        String urlPhoto = "items/"+String.valueOf(id)+".png";
+        if(role.equals(ADMIN) || (role.equals(OWNER) && !item.isSold())){
+            storageService.store(file,urlPhoto);
+            item.setPicture("files/"+urlPhoto);
+            itemService.save(item);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
 }

@@ -1,5 +1,8 @@
 package org.auctions.sf57.entity;
 
+import org.auctions.sf57.dto.ItemDTO;
+import org.auctions.sf57.dto.UserDTO;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
@@ -38,6 +41,15 @@ public class Item implements Serializable {
     private Set<Auction> auctions = new HashSet<>();
 
     public Item(){}
+
+    public Item fromDTO(ItemDTO itemDTO) {
+        this.name = itemDTO.getName();
+        this.description = itemDTO.getDescription();
+        this.picture = itemDTO.getPicture();
+        this.sold = itemDTO.isSold();
+        this.auctions = itemDTO.getAuctions();
+        return this;
+    }
 
     public long getId() {
         return id;

@@ -1,7 +1,8 @@
 /**
  * Created by vladimir_antin on 17.5.17..
  */
-function Items($scope,data,$http,$mdDialog,$mdToast) {
+function Items($scope,$http,$mdDialog,$mdToast) {
+    $scope.token = "jwt "+localStorage.getItem("jwt_token");
     $scope.data = {
         btn_delete_item:false
     };
@@ -33,7 +34,7 @@ function Items($scope,data,$http,$mdDialog,$mdToast) {
         url : "/api/items",
         headers:{
             "Content-type":"application/json",
-            "Authorization":data.token
+            "Authorization":$scope.token
         }
     }).then(function(response) {
         if(response.status==200) {
@@ -61,12 +62,12 @@ function Items($scope,data,$http,$mdDialog,$mdToast) {
                 url : "/api/items/"+item.id,
                 headers:{
                     "Content-type":"application/json",
-                    "Authorization":data.token
+                    "Authorization":$scope.token
                 }
             }).then(function (response) {
                 if(response.status ==204){
-                    indexItem = $scope.items.indexOf(user);
-                    $scope.items.splice(indexUser,1);
+                    indexItem = $scope.items.indexOf(item);
+                    $scope.items.splice(indexItem,1);
                     toast_message("Item deleted!","Ok",$mdToast);
                 }
             },function error(response) {
@@ -86,7 +87,7 @@ function Items($scope,data,$http,$mdDialog,$mdToast) {
             url: '/api/me',
             headers: {
                 "Content-type":"application/json",
-                "Authorization":data.token
+                "Authorization":$scope.token
             }
         }).then(function(response) {
             if(response.status==200){

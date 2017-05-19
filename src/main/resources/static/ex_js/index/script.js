@@ -2,12 +2,9 @@
  * Created by vladimir_antin on 11.5.17..
  */
 var nav = angular.module('nav', ['ngMaterial','ngRoute']);
-nav.factory("data",function () {
-   return {token:""}
-});
-nav.controller('nav', function nav ($scope,data, $mdSidenav,$http) {
-    data.token = "jwt "+sessionStorage.getItem("jwt_token");
-    if(!sessionStorage.getItem("jwt_token")){
+nav.controller('nav', function nav ($scope, $mdSidenav,$http) {
+    $scope.token = "jwt "+localStorage.getItem("jwt_token");
+    if(!localStorage.getItem("jwt_token")){
         window.location.replace("login");
     }else{
         $http({
@@ -15,12 +12,12 @@ nav.controller('nav', function nav ($scope,data, $mdSidenav,$http) {
             url: '/api/me',
             headers: {
                 "Content-type":"application/json",
-                "Authorization":data.token
+                "Authorization":$scope.token
             }
         }).then(function done(response) {
         },function error(response) {
             if (response.status >= 400) {
-                sessionStorage.removeItem("jwt_token");
+                localStorage.removeItem("jwt_token");
                 window.location.replace("login");
             }
         });
@@ -34,7 +31,7 @@ nav.controller('nav', function nav ($scope,data, $mdSidenav,$http) {
         url: '/api/nav_items',
         headers: {
             "Content-type":"application/json",
-            "Authorization":data.token
+            "Authorization":$scope.token
         }
     }).then(function(response) {
         if(response.status==200){
@@ -42,7 +39,7 @@ nav.controller('nav', function nav ($scope,data, $mdSidenav,$http) {
         }
     },function error(response) {
         if (response.status >= 400) {
-            sessionStorage.removeItem("jwt_token");
+            localStorage.removeItem("jwt_token");
             window.location.replace("login");
         }
     });
@@ -69,14 +66,22 @@ nav.config(function ($routeProvider) {
     when('/items', {
         templateUrl: 'views/items.html',
         controller: 'items'
-    })
-    // otherwise({
-    //     redirectTo: '/home'
-    // });
+    }).
+    when('/items/add', {
+        templateUrl: 'views/items/add_item.html',
+        controller: 'add_item'
+    }).
+    when('/items/:itemId', {
+        templateUrl: 'views/items/item.html',
+        controller: 'item'
+    }).
+    otherwise({
+        redirectTo: '/home'
+    });
 });
 
 nav.controller('logout', function ($scope) {
-    sessionStorage.removeItem("jwt_token");
+    localStorage.removeItem("jwt_token");
     window.location.replace("login")
 });
 
@@ -84,3 +89,5 @@ nav.controller('users', Users);
 nav.controller('add_user', Add_users);
 nav.controller('profile', Profile);
 nav.controller('items', Items);
+nav.controller('add_item', Add_item);
+nav.controller('item', Item);

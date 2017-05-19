@@ -1,8 +1,8 @@
 /**
- * Created by vladimir_antin on 13.5.17..
+ * Created by vladimir_antin on 19.5.17..
  */
-function Add_users($scope,$http,$mdToast) {
-    $scope.token = "jwt "+localStorage.getItem("jwt_token");
+function Add_item($scope,$http,$mdToast) {
+    $scope.token = "jwt "+sessionStorage.getItem("jwt_token");
     $http({
         method: 'GET',
         url: '/api/me',
@@ -14,49 +14,29 @@ function Add_users($scope,$http,$mdToast) {
         if (response.status == 200) {
             $scope.me = response.data;
             if ($scope.me != null) {
-                if ($scope.me.role != "admin") {
+                if ($scope.me.role == "bidder") {
                     window.location.replace("#/home");
                 }
             }
         }
     });
-    $scope.user ={
+    $scope.item ={
         name:"",
-        email:"",
-        password:"",
-        address:"",
-        phone:"",
-        role:"bidder"
+        description:""
     };
     $scope.data={
         valid:{
-            name:"",
-            email:"",
-            password:""
+            name:""
         },
         btn_save:true
     };
     $scope.change_inputs = function (add_form) {
         if(add_form.$valid){
             $scope.data.valid.name = "";
-            $scope.data.valid.email = "";
-            $scope.data.valid.password = "";
-            $scope.data.btn_save = false;
+            $scope.data.btn_save=false;
         }else{
-            if($scope.user.name==""){
+            if($scope.item.name==""){
                 $scope.data.valid.name = "Name is empty.";
-            }
-            if(add_form.$error.pattern==undefined){
-                if($scope.user.email==""){
-                    $scope.data.valid.email = "Email is empty.";
-                }
-            }else{
-                if($scope.user.email!=""){
-                    $scope.data.valid.email = "Your email must be between 6 and 30 characters long and look like an e-mail address.";
-                }
-            }
-            if($scope.user.password==""){
-                $scope.data.valid.password = "Password is empty.";
             }
             $scope.data.btn_save = true;
         }
@@ -67,20 +47,19 @@ function Add_users($scope,$http,$mdToast) {
         }else{
             $http({
                 method: 'POST',
-                url: '/api/users',
+                url: '/api/items',
                 headers: {
                     'Content-Type': "application/json",
                     "Authorization":$scope.token
                 },
-                data: $scope.user
+                data: $scope.item
             }).then(function success(response) {
                 if(response.status==201){
-                    window.location.replace("#/users")
+                    window.location.replace("#/items")
                 }
             }, function error(response) {
                 if(response.status==409){
-                    $scope.data.valid.email = "Email is exist.";
-                    toast_message("Conflict, email is exist or form is not valid","Ok",$mdToast);
+                    toast_message("Conflict, name is not valid","Ok",$mdToast);
 
                 }
             });

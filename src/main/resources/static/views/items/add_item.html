@@ -1,0 +1,22 @@
+<md-content class="md-padding">
+    <form name="add_form">
+        <md-input-container class="md-block">
+            <label class="md-headline">Name</label>
+            <input autofocus required ng-model="item.name" class="md-headline" ng-change="change_inputs(add_form)"
+                   maxlength="30" md-maxlength="30" />
+            <div ng-messages="add_form.name.$error" role="alert">
+                <div ng-message-exp="['required', 'maxlength']">
+                    {{data.valid.name}}
+                </div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label class="md-headline">Description</label>
+            <input ng-model="item.description" class="md-headline" />
+        </md-input-container>
+        <md-button class="md-fab md-primary" ng-click="save(add_form)" ng-disabled="data.btn_save">
+            <md-icon ng-bind="'save'"></md-icon>
+            <md-tooltip>Save</md-tooltip>
+        </md-button>
+    </form>
+</md-content>

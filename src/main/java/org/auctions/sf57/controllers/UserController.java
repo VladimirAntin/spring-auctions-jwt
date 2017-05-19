@@ -28,12 +28,8 @@ public class UserController {
     @Autowired
     private UserServiceInterface userService;
 
-    private final StorageService storageService;
-
     @Autowired
-    public UserController(StorageService storageService) {
-        this.storageService = storageService;
-    }
+    private StorageService storageService;
 
     private String ADMIN = "admin";
 
@@ -69,9 +65,10 @@ public class UserController {
                 !Sf57Utils.validate(userDTO.getName(),1,30) ||
                 !Sf57Utils.validate(userDTO.getPassword(),1,10) ||
                 !Sf57Utils.validate(userDTO.getPhone(),0,30)){
-                return new ResponseEntity<UserDTO>(HttpStatus.BAD_REQUEST); //400
+                return new ResponseEntity<UserDTO>(HttpStatus.CONFLICT); //409
             }
             try{
+                userDTO.setPicture("/images/profile.png");
                 user = userService.save(new User().fromDTO(userDTO));
                 return new ResponseEntity<UserDTO>(new UserDTO(user),HttpStatus.CREATED);
             }catch (Exception e){
@@ -86,8 +83,11 @@ public class UserController {
     public ResponseEntity deleteUserById(@PathVariable("id") long id,final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
+        User user = userService.findOne(id);
+        if(user==null){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
         if(role.equals(ADMIN)){
-            User user = userService.findOne(id);
             if(user.getId()==Long.parseLong(claims.getSubject())){
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
@@ -120,10 +120,10 @@ public class UserController {
         if(role.equals(ADMIN)){
             user.setRole(userDTO.getRole());
             userService.save(user);
-            return new ResponseEntity(new UserDTO(user),HttpStatus.OK);
+            return new ResponseEntity<UserDTO>(new UserDTO(user),HttpStatus.OK);
         }else if(Long.parseLong(claims.getSubject())==id){
             userService.save(user);
-            return new ResponseEntity(new UserDTO(user),HttpStatus.OK);
+            return new ResponseEntity<UserDTO>(new UserDTO(user),HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }

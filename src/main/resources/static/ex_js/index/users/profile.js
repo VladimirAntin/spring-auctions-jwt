@@ -1,8 +1,8 @@
 /**
  * Created by vladimir_antin on 14.5.17..
  */
-function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
-
+function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
+    $scope.token = "jwt "+localStorage.getItem("jwt_token");
     $scope.data = {
         show:{
             disable_input:true,
@@ -25,7 +25,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
         url: '/api/users/'+$routeParams.userId,
         headers: {
             "Content-type":"application/json",
-            "Authorization":data.token
+            "Authorization":$scope.token
         }
     }).then(function(response) {
         if(response.status==200){
@@ -48,12 +48,11 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                     url : "/api/users/"+user.id,
                     headers:{
                         "Content-type":"application/json",
-                        "Authorization":data.token
+                        "Authorization":$scope.token
                     }
                 }).then(function (response) {
                     if(response.status ==204){
                         window.location.replace("#/users")
-                        $scope.me_service();
                     }
                 },function error(response) {
                     if(response.status==401){
@@ -72,7 +71,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
             url: '/api/me',
             headers: {
                 "Content-type":"application/json",
-                "Authorization":data.token
+                "Authorization":$scope.token
             }
         }).then(function(response) {
             if(response.status==200){
@@ -109,13 +108,12 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
             $scope.data.btn_edit.icon = "save";
             $scope.data.btn_edit.tooltip = "Save";
         }else if (edit_forum.$valid){
-            console.log($scope.user.role);
             $http({
                 method: 'PUT',
                 url: '/api/users/'+$routeParams.userId,
                 headers: {
                     "Content-type":"application/json",
-                    "Authorization":data.token
+                    "Authorization":$scope.token
                 },
                 data:$scope.user
             }).then(function done(response) {
@@ -153,7 +151,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
                     url: '/api/users/'+$routeParams.userId+"/password",
                     headers: {
                         "Content-type":"application/json",
-                        "Authorization":data.token
+                        "Authorization":$scope.token
                     },
                     data:$scope.user
                 }).then(function(response) {
@@ -187,7 +185,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
             url: 'api/users/'+$scope.user.id+'/upload',
             type: 'POST',
             headers:{
-                "Authorization":data.token
+                "Authorization":$scope.token
             },
             data: new FormData($('form')[0]),
             cache: false,
@@ -196,7 +194,7 @@ function Profile($scope,data,$http,$routeParams,$mdDialog,$mdToast) {
             statusCode:{
                 200:function (response) {
                     window.location.reload();
-                },
+                }
             }
         });
     };

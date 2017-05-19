@@ -1,0 +1,47 @@
+<md-content>
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="info">
+            <form name="edit_form">
+                <md-content class="md-padding info_user">
+                    <div layout-gt-sm="row">
+                        <img class="profile_image" ng-src="{{item.picture}}">
+                        <md-input-container class="md-block">
+                            <label class="md-headline">ID</label>
+                            <input class="md-headline" ng-model="item.id" disabled>
+                        </md-input-container>
+                    </div>
+                    <label class="md-button md-raised md-primary" id="file">Change photo
+                        <input type="file" name="file" accept="image/*"
+                               onchange="angular.element(this).scope().change_photo()" ng-show="data.show.btn_edit"/>
+                    </label>
+                    <md-input-container class="md-block">
+                        <label class="md-headline">Name</label>
+                        <input autofocus required ng-model="item.name" class="md-headline" ng-disabled="data.show.disable_input"
+                               maxlength="30" md-maxlength="30" />
+                        <div ng-messages="edit_form.name.$error" role="alert">
+                            <div ng-message-exp="['required', 'maxlength']">
+                            </div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label class="md-headline">Descritpion</label>
+                        <input class="md-headline" ng-model="item.description" ng-disabled="data.show.disable_input">
+                    </md-input-container>
+                    <md-button class="md-fab md-primary" ng-click="edit_mode(edit_form)" ng-show="data.show.btn_edit">
+                        <md-icon ng-bind="data.btn_edit.icon"></md-icon>
+                        <md-tooltip>{{data.btn_edit.tooltip}}</md-tooltip>
+                    </md-button>
+                    <md-button class="md-fab" ng-click="openDeleteMode(item)" ng-show="data.show.btn_delete">
+                        <md-icon ng-bind="'delete'"></md-icon>
+                        <md-tooltip>Delete user</md-tooltip>
+                    </md-button>
+                </md-content>
+            </form>
+        </md-tab>
+        <md-tab label="bids">
+            <md-content class="md-padding">
+                <h1 class="md-display-2">Bids</h1>
+            </md-content>
+        </md-tab>
+    </md-tabs>
+</md-content>

@@ -1,8 +1,8 @@
 /**
  * Created by vladimir_antin on 12.5.17..
  */
-function Users($scope,data,$http,$mdDialog,$mdToast) {
-
+function Users($scope,$http,$mdDialog,$mdToast) {
+    $scope.token = "jwt "+localStorage.getItem("jwt_token");
     $scope.users_head_items = [
         {name:"id",icon:"arrow_drop_down"},
         {name:"name and surname",icon:"arrow_drop_down"},
@@ -46,7 +46,7 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
         url : "/api/users",
         headers:{
             "Content-type":"application/json",
-            "Authorization":data.token
+            "Authorization":$scope.token
         }
     }).then(function(response) {
         if(response.status==200) {
@@ -73,7 +73,7 @@ function Users($scope,data,$http,$mdDialog,$mdToast) {
                 url : "/api/users/"+user.id,
                 headers:{
                     "Content-type":"application/json",
-                    "Authorization":data.token
+                    "Authorization":$scope.token
                 }
             }).then(function (response) {
                 if(response.status ==204){

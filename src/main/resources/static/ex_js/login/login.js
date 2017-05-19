@@ -6,7 +6,7 @@ var app = angular.module('app', ['ngMaterial']);
 app.controller('login', LoginPost);
 
 function LoginPost($scope,$http) {
-    if(sessionStorage.getItem("jwt_token")){
+    if(localStorage.getItem("jwt_token")){
         window.location.replace("/home")
     }
 
@@ -39,7 +39,7 @@ function LoginPost($scope,$http) {
                 if($scope.user.username==""){
                     $scope.data.valid.username= "Email is empty.";
                 }
-            }else if(add_form.$error.pattern.length){
+            }else if(login_form.$error.pattern.length){
                 if($scope.user.username!==""){
                     $scope.data.valid.username = "Your email must be between 6 and 30 characters long and look like an e-mail address.";
                 }
@@ -60,7 +60,7 @@ function LoginPost($scope,$http) {
                 },
                 data: $scope.user
             }).then(function success(response) {
-                sessionStorage.setItem("jwt_token",response.data.token)
+                localStorage.setItem("jwt_token",response.data.token)
                 window.location.replace("/home")
             }, function error(response) {
                 $scope.data.error_login = response.data.message;
