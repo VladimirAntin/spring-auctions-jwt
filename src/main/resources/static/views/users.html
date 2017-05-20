@@ -25,7 +25,7 @@
     <thead>
     <tr>
         <th ng-repeat="td in users_head_items">
-            <md-button md-no-ink data-ng-click="sort(td.name)">
+            <md-button md-no-ink data-ng-click="sort(td.name,users_head_items)">
                 {{td.name}} <md-icon ng-bind={{"td.icon"}}></md-icon>
             </md-button>
         </th>

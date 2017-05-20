@@ -28,18 +28,8 @@ function Auctions($scope,$http,$mdDialog,$mdToast) {
         }
     };
 
-    $scope.sort =function (name){
-        angular.forEach($scope.auctions_head_items, function(value, key) {
-            if(value.name==name){
-                if(value.icon == "arrow_drop_down"){
-                    value.icon = "arrow_drop_up";
-                    $scope.orderByHead = "-"+name;
-                }else{
-                    value.icon = "arrow_drop_down";
-                    $scope.orderByHead = name;
-                }
-            }
-        });
+    $scope.sort =function (name,sort_items){
+        sort($scope,name,sort_items);
     };
     $scope.auctions = [];
 
@@ -53,7 +43,16 @@ function Auctions($scope,$http,$mdDialog,$mdToast) {
     }).then(function(response) {
         if(response.status==200) {
             $scope.auctions = response.data;
-            $scope.me_service();
+            me_service($http,$scope, function (me) {
+                $scope.me=me;
+                if($scope.me!=null){
+                    if($scope.me.role=="admin"){
+                        $scope.data.btn_delete_auction=true;
+                    }else{
+                        $scope.data.btn_delete_auction=false;
+                    }
+                }
+            });
         }
     },function error(response) {
         if(response.status==401){
@@ -65,56 +64,8 @@ function Auctions($scope,$http,$mdDialog,$mdToast) {
     });
 
     $scope.delete_auction = function (auction){
-        var confirm = $mdDialog.confirm()
-            .title('Do you sure?')
-            .textContent('item with id: "'+auction.id+'" will be deleted')
-            .ok('Ok')
-            .cancel('Cancel');
-        $mdDialog.show(confirm).then(function() {
-            $http({
-                method : "DELETE",
-                url : "/api/auctions/"+auction.id,
-                headers:{
-                    "Content-type":"application/json",
-                    "Authorization":$scope.token
-                }
-            }).then(function (response) {
-                if(response.status ==204){
-                    indexAuction = $scope.auctions.indexOf(auction);
-                    $scope.auctions.splice(indexAuction,1);
-                    toast_message("Auction deleted!","Ok",$mdToast);
-                }
-            },function error(response) {
-                if(response.status==401){
-                    toast_message("Unauthorized, it is your account","Ok",$mdToast);
-                }else if(response.status>=500){
-                    toast_message("Server Error","Ok",$mdToast);
-                }
-            });
-        });
+        delete_auction(auction,$scope,$http,$mdDialog,$mdToast);
     };
 
-
-    $scope.me_service = function () {
-        $http({
-            method: 'GET',
-            url: '/api/me',
-            headers: {
-                "Content-type":"application/json",
-                "Authorization":$scope.token
-            }
-        }).then(function(response) {
-            if(response.status==200){
-                $scope.me = response.data;
-                if($scope.me!=null){
-                    if($scope.me.role=="admin"){
-                        $scope.data.btn_delete_auction=true;
-                    }else{
-                        $scope.data.btn_delete_auction=false;
-                    }
-                }
-            }
-        });
-    }
 }
 

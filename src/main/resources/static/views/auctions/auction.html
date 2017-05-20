@@ -1,0 +1,53 @@
+<md-content>
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="info">
+            <form name="edit_form">
+                <md-content class="md-padding info_user">
+                    <div layout-gt-sm="row">
+                        <img class="profile_image" ng-src="{{auction.item.picture}}">
+                        <md-input-container class="md-block">
+                            <label class="md-headline">ID</label>
+                            <input class="md-headline" ng-model="auction.id" disabled>
+                        </md-input-container>
+                        <md-input-container class="md-block">
+                            <label class="md-headline">Name</label>
+                            <input ng-model="auction.item.name" class="md-headline" disabled />
+                        </md-input-container>
+                    </div>
+                    <md-input-container class="md-block">
+                        <label class="md-headline">Descritpion</label>
+                        <input class="md-headline" ng-model="auction.item.description" disabled>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label class="md-headline">Start date</label>
+                        <input class="md-headline" ng-model="auction.startDate" ng-disabled="data.show.disable_input">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label class="md-headline">End date</label>
+                        <input class="md-headline" ng-model="auction.endDate" ng-disabled="data.show.disable_input">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label class="md-headline">Start price</label>
+                        <input class="md-headline" ng-model="auction.startPrice" ng-disabled="data.show.disable_input">
+                    </md-input-container>
+                    <md-switch ng-model="auction.item.sold" aria-label="Sold" disabled>
+                        {{ auction.item.sold?"Sold":"Not sold" }}
+                    </md-switch>
+                    <md-button class="md-fab md-primary" ng-click="edit_mode(edit_form)" ng-show="data.show.btn_edit">
+                        <md-icon ng-bind="data.btn_edit.icon"></md-icon>
+                        <md-tooltip>{{data.btn_edit.tooltip}}</md-tooltip>
+                    </md-button>
+                    <md-button class="md-fab" ng-click="openDeleteMode(item)" ng-show="data.show.btn_delete">
+                        <md-icon ng-bind="'delete'"></md-icon>
+                        <md-tooltip>Delete auction</md-tooltip>
+                    </md-button>
+                </md-content>
+            </form>
+        </md-tab>
+        <md-tab label="bids">
+            <md-content class="md-padding">
+                <h1 class="md-display-2">Bids</h1>
+            </md-content>
+        </md-tab>
+    </md-tabs>
+</md-content>

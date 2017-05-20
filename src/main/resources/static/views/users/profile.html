@@ -79,6 +79,10 @@
                                 </md-optgroup>
                             </md-select>
                         </md-input-container>
+                        <md-button class="md-fab md-primary" href="#/auctions/add">
+                            <md-icon ng-bind="'add'"></md-icon>
+                            <md-tooltip>Add auction</md-tooltip>
+                        </md-button>
                     </div>
                 </div>
                 <table class="responsive-table">
@@ -98,7 +102,6 @@
                         <td><md-button class="md-raised md-primary users-email" href={{"#/items/"+auction.item.id}}>
                             {{auction.item.name}}
                         </md-button></td>
-                        <td>{{auction.item.description}}</td>
                         <td>{{auction.startDate}}</td>
                         <td>{{auction.endDate}}</td>
                         <td>{{auction.startPrice}}</td>

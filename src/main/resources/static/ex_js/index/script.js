@@ -87,6 +87,10 @@ nav.config(function ($routeProvider) {
         templateUrl: 'views/auctions/add_auction.html',
         controller: 'add_auction'
     }).
+    when('/auctions/:auctionId', {
+        templateUrl: 'views/auctions/auction.html',
+        controller: 'auction'
+    }).
     otherwise({
         redirectTo: '/'
     });
@@ -105,3 +109,4 @@ nav.controller('add_item', Add_item);
 nav.controller('item', Item);
 nav.controller('auctions', Auctions);
 nav.controller('add_auction', Add_auction);
+nav.controller('auction', Auction);

@@ -2,10 +2,12 @@ package org.auctions.sf57.controllers.entity;
 
 import io.jsonwebtoken.Claims;
 import org.auctions.sf57.config.Sf57Utils;
+import org.auctions.sf57.dto.AuctionDTO;
 import org.auctions.sf57.dto.ItemDTO;
 import org.auctions.sf57.dto.UserDTO;
 import org.auctions.sf57.entity.Item;
 import org.auctions.sf57.entity.User;
+import org.auctions.sf57.service.AuctionServiceInterface;
 import org.auctions.sf57.service.ItemServiceInterface;
 import org.auctions.sf57.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class ItemController {
     private ItemServiceInterface itemService;
 
     @Autowired
+    private AuctionServiceInterface auctionService;
+
+    @Autowired
     private StorageService storageService;
 
     @GetMapping(value = "/items")
@@ -46,6 +51,16 @@ public class ItemController {
             return new ResponseEntity<ItemDTO>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<ItemDTO>(new ItemDTO(item),HttpStatus.OK);
+    }
+
+    @GetMapping(value="/items/{id}/auctions")
+    public ResponseEntity<List<AuctionDTO>> getItemAuctions(@PathVariable("id") long id, final HttpServletRequest request){
+        Item item = itemService.findOne(id);
+        if (item==null){
+            return new ResponseEntity<List<AuctionDTO>>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<List<AuctionDTO>>(
+                Sf57Utils.auctionsToDTO(auctionService.findAllByItem(item)),HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
@@ -98,6 +113,7 @@ public class ItemController {
             item.setName(itemDTO.getName());
         }
         item.setDescription(itemDTO.getDescription());
+        item.setSold(itemDTO.isSold());
         if(role.equals(ADMIN) || (role.equals(OWNER) && !item.isSold())){
             itemService.save(item);
             return new ResponseEntity<ItemDTO>(new ItemDTO(item),HttpStatus.OK);

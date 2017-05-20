@@ -80,7 +80,7 @@ function Add_auction($scope,$http,$mdToast) {
                 data: $scope.auction
             }).then(function success(response) {
                 if(response.status==201){
-                    window.location.replace("#/auctions")
+                    window.history.back();
                 }
             }, function error(response) {
                 if(response.status==409){

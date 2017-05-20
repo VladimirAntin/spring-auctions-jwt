@@ -1,6 +1,7 @@
 package org.auctions.sf57.service;
 
 import org.auctions.sf57.entity.Auction;
+import org.auctions.sf57.entity.Item;
 import org.auctions.sf57.entity.User;
 import org.auctions.sf57.repository.AuctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ public class AuctionService implements AuctionServiceInterface{
     @Autowired
     AuctionRepository auctionRepository;
 
-
     @Override
     public Auction findOne(Long auction_id) {
         return auctionRepository.findOne(auction_id);
@@ -31,6 +31,11 @@ public class AuctionService implements AuctionServiceInterface{
     @Override
     public List<Auction> findAllByUser(User user) {
         return auctionRepository.findAllByUser(user);
+    }
+
+    @Override
+    public List<Auction> findAllByItem(Item item) {
+        return auctionRepository.findAllByItem(item);
     }
 
     @Override

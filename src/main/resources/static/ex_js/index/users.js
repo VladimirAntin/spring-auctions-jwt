@@ -5,7 +5,7 @@ function Users($scope,$http,$mdDialog,$mdToast) {
     $scope.token = "jwt "+localStorage.getItem("jwt_token");
     $scope.users_head_items = [
         {name:"id",icon:"arrow_drop_down"},
-        {name:"name and surname",icon:"arrow_drop_down"},
+        {name:"name",icon:"arrow_drop_down"},
         {name:"email",icon:"arrow_drop_down"},
         {name:"address",icon:"arrow_drop_down"},
         {name:"phone",icon:"arrow_drop_down"},
@@ -22,22 +22,11 @@ function Users($scope,$http,$mdDialog,$mdToast) {
     $scope.getSelectedRole = function() {
         if ($scope.selectedRole !== undefined) {
             return $scope.selectedRole.name;
-        } else {
         }
     };
 
-    $scope.sort =function (name){
-        angular.forEach($scope.users_head_items, function(value, key) {
-            if(value.name==name){
-                if(value.icon == "arrow_drop_down"){
-                    value.icon = "arrow_drop_up";
-                    $scope.orderByHead = "-"+name;
-                }else{
-                    value.icon = "arrow_drop_down";
-                    $scope.orderByHead = name;
-                }
-            }
-        });
+    $scope.sort =function (name,sort_items){
+        sort($scope,name,sort_items);
     };
     $scope.users = [];
 

@@ -27,20 +27,72 @@
                         <label class="md-headline">Descritpion</label>
                         <input class="md-headline" ng-model="item.description" ng-disabled="data.show.disable_input">
                     </md-input-container>
+                    <md-switch ng-model="item.sold" aria-label="Sold" ng-disabled="data.show.disable_input">
+                        {{ item.sold?"Sold":"Not sold" }}
+                    </md-switch>
                     <md-button class="md-fab md-primary" ng-click="edit_mode(edit_form)" ng-show="data.show.btn_edit">
                         <md-icon ng-bind="data.btn_edit.icon"></md-icon>
                         <md-tooltip>{{data.btn_edit.tooltip}}</md-tooltip>
                     </md-button>
                     <md-button class="md-fab" ng-click="openDeleteMode(item)" ng-show="data.show.btn_delete">
                         <md-icon ng-bind="'delete'"></md-icon>
-                        <md-tooltip>Delete user</md-tooltip>
+                        <md-tooltip>Delete item</md-tooltip>
                     </md-button>
                 </md-content>
             </form>
         </md-tab>
         <md-tab label="auctions">
             <md-content class="md-padding">
-                <h1 class="md-display-2">Auctions</h1>
+                <div>
+                    <div layout="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Search</label>
+                            <input type="text" ng-model="search_auctions">
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Sold</label>
+                            <md-select ng-model="itemSold" md-selected-text="isSold()">
+                                <md-optgroup label="Sold">
+                                    <md-option value="{{sold_item.value}}" ng-repeat="sold_item in items_sold">{{sold_item.name}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                        <md-button class="md-fab md-primary" href="#/auctions/add">
+                            <md-icon ng-bind="'add'"></md-icon>
+                            <md-tooltip>Add auction</md-tooltip>
+                        </md-button>
+                    </div>
+                </div>
+                <table class="responsive-table">
+                    <thead>
+                    <tr>
+                        <th ng-repeat="td in auctions_head_items">
+                            <md-button md-no-ink data-ng-click="sort(td.name,auctions_head_items)">
+                                {{td.title}} <md-icon ng-bind={{"td.icon"}}></md-icon>
+                            </md-button>
+                        </th>
+                        <th><md-icon ng-bind="'arrow_drop_down'"></md-icon></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="auction in auctions |orderBy:orderByHead |filter:search_auctions |filter:{item:{sold:itemSold}} ">
+                        <td><md-button href={{"#/auctions/"+auction.id}}> {{auction.id}}</md-button></td>
+                        <td><md-button class="md-raised md-primary users-email" href={{"#/users/"+auction.user.id}}>
+                            {{auction.user.email}}
+                        </md-button></td>
+                        <td>{{auction.startDate}}</td>
+                        <td>{{auction.endDate}}</td>
+                        <td>{{auction.startPrice}}</td>
+                        <td>{{auction.item.sold}}</td>
+                        <td>
+                            <md-button class="md-fab" ng-click="delete_auction(auction)" ng-show="data.show.btn_delete_auction">
+                                <md-icon ng-bind="'delete'"></md-icon>
+                                <md-tooltip>Delete auction</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </md-content>
         </md-tab>
     </md-tabs>

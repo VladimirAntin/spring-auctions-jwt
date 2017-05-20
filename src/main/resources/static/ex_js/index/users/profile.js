@@ -31,64 +31,8 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
     }).then(function(response) {
         if(response.status==200){
             $scope.user = response.data;
-            $scope.me_service();
-        }
-    });
-    $http({
-        method: 'GET',
-        url: '/api/users/'+$routeParams.userId+"/auctions",
-        headers: {
-            "Content-type":"application/json",
-            "Authorization":$scope.token
-        }
-    }).then(function(response) {
-        if(response.status==200){
-            $scope.auctions = response.data;
-        }
-    });
-    $scope.openDeleteMode = function (user) {
-        if($scope.me.email==user.email){
-            toast_message("Unauthorized, it is your account","Ok",$mdToast);
-        }else{
-            var confirm = $mdDialog.confirm()
-                .title('Do you sure?')
-                .textContent('user with a email: "'+user.email+'" and id: "'+user.id+'" will be deleted')
-                .ok('Ok')
-                .cancel('Cancel');
-            $mdDialog.show(confirm).then(function() {
-                $http({
-                    method : "DELETE",
-                    url : "/api/users/"+user.id,
-                    headers:{
-                        "Content-type":"application/json",
-                        "Authorization":$scope.token
-                    }
-                }).then(function (response) {
-                    if(response.status ==204){
-                        window.location.replace("#/users")
-                    }
-                },function error(response) {
-                    if(response.status==401){
-                        toast_message("Unauthorized, it is your account","Ok",$mdToast);
-                    }else if(response.status>=500){
-                        toast_message("Server Error","Ok",$mdToast);
-                    }
-                });
-            });
-        }
-    };
-
-    $scope.me_service = function () {
-        $http({
-            method: 'GET',
-            url: '/api/me',
-            headers: {
-                "Content-type":"application/json",
-                "Authorization":$scope.token
-            }
-        }).then(function(response) {
-            if(response.status==200){
-                $scope.me = response.data;
+            me_service($http,$scope, function (me) {
+                $scope.me=me;
                 if($scope.me!=null){
                     if($scope.me.email==$scope.user.email){
                         $scope.data.show.btn_edit=true;
@@ -111,11 +55,27 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
                         $scope.data.show.btn_delete=false;
                     }
                 }
-            }
-        });
+
+            });
+        }
+    });
+    $http({
+        method: 'GET',
+        url: '/api/users/'+$routeParams.userId+"/auctions",
+        headers: {
+            "Content-type":"application/json",
+            "Authorization":$scope.token
+        }
+    }).then(function(response) {
+        if(response.status==200){
+            $scope.auctions = response.data;
+        }
+    });
+    $scope.openDeleteMode = function (user) {
+        delete_auction(auction,$scope,$http,$mdDialog,$mdToast);
     };
 
-    $scope.edit_mode = function (edit_forum) {
+    $scope.edit_mode = function (edit_form) {
         if($scope.data.show.disable_input){
             if($scope.me.role=="admin"){
                 $scope.data.show.disable_change_role = false;
@@ -123,7 +83,7 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
             $scope.data.show.disable_input = false;
             $scope.data.btn_edit.icon = "save";
             $scope.data.btn_edit.tooltip = "Save";
-        }else if (edit_forum.$valid){
+        }else if (edit_form.$valid){
             $http({
                 method: 'PUT',
                 url: '/api/users/'+$routeParams.userId,
@@ -235,17 +195,11 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
         }
     };
     $scope.sort =function (name,sort_items){
-        angular.forEach($scope.sort_items, function(value, key) {
-            if(value.name==name){
-                if(value.icon == "arrow_drop_down"){
-                    value.icon = "arrow_drop_up";
-                    $scope.orderByHead = "-"+name;
-                }else{
-                    value.icon = "arrow_drop_down";
-                    $scope.orderByHead = name;
-                }
-            }
-        });
+        sort($scope,name,sort_items);
     };
+
+    $scope.delete_auction = function (auction) {
+        delete_auction(auction,$scope,$http,$mdDialog,$mdToast);
+    }
 
 }

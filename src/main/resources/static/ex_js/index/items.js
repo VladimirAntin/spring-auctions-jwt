@@ -14,18 +14,8 @@ function Items($scope,$http,$mdDialog,$mdToast) {
     ];
 
 
-    $scope.sort =function (name){
-        angular.forEach($scope.items_head_items, function(value, key) {
-            if(value.name==name){
-                if(value.icon == "arrow_drop_down"){
-                    value.icon = "arrow_drop_up";
-                    $scope.orderByHead = "-"+name;
-                }else{
-                    value.icon = "arrow_drop_down";
-                    $scope.orderByHead = name;
-                }
-            }
-        });
+    $scope.sort =function (name,sort_items){
+        sort($scope,name,sort_items);
     };
     $scope.items = [];
 
@@ -39,7 +29,18 @@ function Items($scope,$http,$mdDialog,$mdToast) {
     }).then(function(response) {
         if(response.status==200) {
             $scope.items = response.data;
-            $scope.me_service();
+            me_service($http,$scope, function (me) {
+                $scope.me=me;
+                if($scope.me!=null){
+                    if($scope.me.role=="admin"){
+                        $scope.data.btn_delete_item=true;
+                    }else if($scope.me.role=="owner"){
+                        $scope.data.btn_delete_item=false;
+                    }else{
+                        window.location.replace("#/")
+                    }
+                }
+            });
         }
     },function error(response) {
         if(response.status==401){
@@ -79,30 +80,5 @@ function Items($scope,$http,$mdDialog,$mdToast) {
             });
         });
     };
-
-
-    $scope.me_service = function () {
-        $http({
-            method: 'GET',
-            url: '/api/me',
-            headers: {
-                "Content-type":"application/json",
-                "Authorization":$scope.token
-            }
-        }).then(function(response) {
-            if(response.status==200){
-                $scope.me = response.data;
-                if($scope.me!=null){
-                    if($scope.me.role=="admin"){
-                        $scope.data.btn_delete_item=true;
-                    }else if($scope.me.role=="owner"){
-                        $scope.data.btn_delete_item=false;
-                    }else{
-                        window.location.replace("#/")
-                    }
-                }
-            }
-        });
-    }
 }
 

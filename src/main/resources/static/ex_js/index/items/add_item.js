@@ -3,20 +3,11 @@
  */
 function Add_item($scope,$http,$mdToast) {
     $scope.token = "jwt "+localStorage.getItem("jwt_token");
-    $http({
-        method: 'GET',
-        url: '/api/me',
-        headers: {
-            "Content-type":"application/json",
-            "Authorization":$scope.token
-        }
-    }).then(function(response) {
-        if (response.status == 200) {
-            $scope.me = response.data;
-            if ($scope.me != null) {
-                if ($scope.me.role == "bidder") {
-                    window.location.replace("#/home");
-                }
+    me_service($http,$scope, function (me) {
+        $scope.me=me;
+        if ($scope.me != null) {
+            if ($scope.me.role == "bidder") {
+                window.location.replace("#/home");
             }
         }
     });

@@ -3,14 +3,8 @@
  */
 function Add_users($scope,$http,$mdToast) {
     $scope.token = "jwt "+localStorage.getItem("jwt_token");
-    $http({
-        method: 'GET',
-        url: '/api/me',
-        headers: {
-            "Content-type":"application/json",
-            "Authorization":$scope.token
-        }
-    }).then(function(response) {
+    me_service($http,$scope, function (me) {
+        $scope.me=me;
         if (response.status == 200) {
             $scope.me = response.data;
             if ($scope.me != null) {

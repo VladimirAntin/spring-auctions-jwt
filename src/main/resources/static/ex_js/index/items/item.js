@@ -7,7 +7,8 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
         show:{
             disable_input:true,
             btn_edit:false,
-            btn_delete:false
+            btn_delete:false,
+            btn_delete_auction:false
         },
         btn_edit:{
             icon:"edit_mode",
@@ -25,7 +26,32 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
     }).then(function(response) {
         if(response.status==200){
             $scope.item = response.data;
-            $scope.me_service();
+            me_service($http,$scope, function (me) {
+                $scope.me=me;
+                if($scope.me!=null){
+                    if($scope.me.role=="admin"){
+                        $scope.data.show.btn_edit=true;
+                        $scope.data.show.btn_delete=true;
+                        $scope.data.show.btn_delete_auction=true;
+                    }else{
+                        $scope.data.show.btn_edit=false;
+                        $scope.data.show.btn_delete=false;
+                        $scope.data.show.btn_delete_auction=false;
+                    }
+                }
+            });
+        }
+    });
+    $http({
+        method: 'GET',
+        url: '/api/items/'+$routeParams.itemId+"/auctions",
+        headers: {
+            "Content-type":"application/json",
+            "Authorization":$scope.token
+        }
+    }).then(function(response) {
+        if(response.status==200){
+            $scope.auctions = response.data;
         }
     });
     $scope.openDeleteMode = function (item) {
@@ -56,36 +82,12 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
         });
     };
 
-    $scope.me_service = function () {
-        $http({
-            method: 'GET',
-            url: '/api/me',
-            headers: {
-                "Content-type":"application/json",
-                "Authorization":$scope.token
-            }
-        }).then(function(response) {
-            if(response.status==200){
-                $scope.me = response.data;
-                if($scope.me!=null){
-                    if($scope.me.role=="admin"){
-                        $scope.data.show.btn_edit=true;
-                        $scope.data.show.btn_delete=true;
-                    }else{
-                        $scope.data.show.btn_edit=false;
-                        $scope.data.show.btn_delete=false;
-                    }
-                }
-            }
-        });
-    };
-
-    $scope.edit_mode = function (edit_forum) {
+    $scope.edit_mode = function (edit_form) {
         if($scope.data.show.disable_input){
             $scope.data.show.disable_input = false;
             $scope.data.btn_edit.icon = "save";
             $scope.data.btn_edit.tooltip = "Save";
-        }else if (edit_forum.$valid){
+        }else if (edit_form.$valid){
             $http({
                 method: 'PUT',
                 url: '/api/items/'+$routeParams.itemId,
@@ -129,4 +131,31 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
             }
         });
     };
+    $scope.auctions_head_items = [
+        {title:"id",icon:"arrow_drop_down", name:"id"},
+        {title:"User",icon:"arrow_drop_down", name:"user.email"},
+        {title:"start date",icon:"arrow_drop_down", name:"startDate"},
+        {title:"end date",icon:"arrow_drop_down", name:"endDate"},
+        {title:"start price",icon:"arrow_drop_down", name:"startPrice"},
+        {title:"sold",icon:"arrow_drop_down", name:"item.sold"}
+    ];
+    $scope.items_sold = [
+        {name:"All auctions",value:""},
+        {name:"Sold",value:"true"},
+        {name:"Not sold",value:"false"}
+    ];
+    $scope.itemSold;
+    $scope.isSold = function() {
+        if ($scope.itemSold !== undefined) {
+            return $scope.itemSold.name;
+        }
+    };
+    $scope.sort =function (name,sort_items){
+        sort($scope,name,sort_items);
+    };
+
+    $scope.delete_auction = function (auction) {
+        delete_auction(auction,$scope,$http,$mdDialog,$mdToast);
+    }
+
 }
