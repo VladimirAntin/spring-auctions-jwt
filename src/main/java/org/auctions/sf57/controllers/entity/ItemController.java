@@ -1,4 +1,4 @@
-package org.auctions.sf57.controllers;
+package org.auctions.sf57.controllers.entity;
 
 import io.jsonwebtoken.Claims;
 import org.auctions.sf57.config.Sf57Utils;
@@ -42,9 +42,6 @@ public class ItemController {
     @GetMapping(value="/items/{id}")
     public ResponseEntity<ItemDTO> getItemById(@PathVariable("id") long id,final HttpServletRequest request){
         Item item = itemService.findOne(id);
-        if(item==null){
-            return new ResponseEntity<ItemDTO>(HttpStatus.NOT_FOUND);
-        }
         if (item==null){
             return new ResponseEntity<ItemDTO>(HttpStatus.NOT_FOUND);
         }
@@ -115,10 +112,7 @@ public class ItemController {
     @PostMapping(value="/items/{id}/upload")
     public ResponseEntity handleFileUpload(@PathVariable("id") long id, @RequestParam("file") MultipartFile file, final HttpServletRequest request) {
         String filename =  file.getOriginalFilename();
-        if(!Sf57Utils.contains(filename,".png") &&
-                !Sf57Utils.contains(filename,".jpg") &&
-                !Sf57Utils.contains(filename,".jpeg") &&
-                !Sf57Utils.contains(filename,".gif")){
+        if(Sf57Utils.photo_formats(filename)){
             return new ResponseEntity(HttpStatus.CONFLICT);
         }
         Claims claims = (Claims) request.getAttribute("claims");

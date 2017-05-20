@@ -1,4 +1,4 @@
-package org.auctions.sf57.controllers;
+package org.auctions.sf57.controllers.entity;
 
 import org.auctions.sf57.config.Sf57Utils;
 import org.auctions.sf57.dto.UserDTO;
@@ -158,10 +158,7 @@ public class UserController {
     @PostMapping(value="/users/{id}/upload")
     public ResponseEntity handleFileUpload(@PathVariable("id") long id, @RequestParam("file") MultipartFile file,final HttpServletRequest request) {
         String filename =  file.getOriginalFilename();
-        if(!Sf57Utils.contains(filename,".png") &&
-            !Sf57Utils.contains(filename,".jpg") &&
-            !Sf57Utils.contains(filename,".jpeg") &&
-            !Sf57Utils.contains(filename,".gif")){
+        if(Sf57Utils.photo_formats(filename)){
             return new ResponseEntity(HttpStatus.CONFLICT);
         }
         Claims claims = (Claims) request.getAttribute("claims");

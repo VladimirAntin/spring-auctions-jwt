@@ -1,7 +1,9 @@
 package org.auctions.sf57.config;
 
+import org.auctions.sf57.dto.AuctionDTO;
 import org.auctions.sf57.dto.ItemDTO;
 import org.auctions.sf57.dto.UserDTO;
+import org.auctions.sf57.entity.Auction;
 import org.auctions.sf57.entity.Item;
 import org.auctions.sf57.entity.User;
 
@@ -23,6 +25,15 @@ public class Sf57Utils {
         }catch (Exception e){
             return  0;
         }
+    }
+    public static boolean photo_formats(String filename){
+        if(!contains(filename,".png") &&
+                !contains(filename,".jpg") &&
+                !contains(filename,".jpeg") &&
+                !contains(filename,".gif")){
+            return true;
+        }
+        return false;
     }
 
     public static boolean validate(String name,long minLength,long maxLength){
@@ -46,6 +57,13 @@ public class Sf57Utils {
             itemsDTO.add(new ItemDTO(item));
         }
         return itemsDTO;
+    }
+    public static List<AuctionDTO> auctionsToDTO(List<Auction> auctions){
+        List<AuctionDTO> auctionDTO = new ArrayList<>();
+        for (Auction auction:auctions) {
+            auctionDTO.add(new AuctionDTO(auction));
+        }
+        return auctionDTO;
     }
 
 }

@@ -1,5 +1,8 @@
 package org.auctions.sf57.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
@@ -19,24 +22,27 @@ public class Auction implements Serializable {
     @Column(name="auction_id", unique=true, nullable=false)
     private long id;
 
-    @Column(name="startPrice", unique=false, nullable=false)
+    @Column(name="startPrice", nullable=false)
     private float startPrice;
 
-    @Column(name="startDate", unique=false, nullable=false)
+    @Column(name="startDate", nullable=false)
     private Date startDate;
 
-    @Column(name="endDate", unique=false, nullable=true)
+    @Column(name="endDate")
     private Date endDate;
 
     @ManyToOne
     @JoinColumn(name="item_id",referencedColumnName = "item_id",nullable = false)
+    @JsonBackReference
     private Item item;
 
     @ManyToOne
     @JoinColumn(name="user_id",referencedColumnName = "user_id",nullable = false)
+    @JsonBackReference
     private User user;
 
-    @OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER, mappedBy="auction")
+    @OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY, mappedBy="auction")
+    @JsonManagedReference
     private Set<Bid> bids = new HashSet<>();
 
     public Auction(){}

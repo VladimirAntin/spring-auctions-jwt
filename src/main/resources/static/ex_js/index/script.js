@@ -47,6 +47,10 @@ nav.controller('nav', function nav ($scope, $mdSidenav,$http) {
 
 nav.config(function ($routeProvider) {
     $routeProvider.
+    when('/', {
+        templateUrl: 'views/items.html',
+        controller: 'items'
+    }).
     when('/logout', {
         template: '',
         controller: 'logout'
@@ -75,8 +79,12 @@ nav.config(function ($routeProvider) {
         templateUrl: 'views/items/item.html',
         controller: 'item'
     }).
+    when('/auctions', {
+        templateUrl: 'views/auctions.html',
+        controller: 'auctions'
+    }).
     otherwise({
-        redirectTo: '/home'
+        redirectTo: '/'
     });
 });
 
@@ -91,3 +99,4 @@ nav.controller('profile', Profile);
 nav.controller('items', Items);
 nav.controller('add_item', Add_item);
 nav.controller('item', Item);
+nav.controller('auctions', Auctions);

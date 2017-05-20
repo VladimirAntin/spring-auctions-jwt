@@ -1,5 +1,7 @@
 package org.auctions.sf57.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -26,10 +28,12 @@ public class Bid implements Serializable {
 
     @ManyToOne
     @JoinColumn(name="auction_id",referencedColumnName = "auction_id",nullable = false)
+    @JsonBackReference
     private Auction auction;
 
     @ManyToOne
     @JoinColumn(name="user_id",referencedColumnName = "user_id",nullable = false)
+    @JsonBackReference
     private User user;
 
     public Bid(){}

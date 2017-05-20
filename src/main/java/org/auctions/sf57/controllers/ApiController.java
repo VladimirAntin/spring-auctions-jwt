@@ -51,7 +51,7 @@ public class ApiController {
             return new ResponseEntity<List<NavItem>>(HttpStatus.UNAUTHORIZED);
         }
         List<NavItem> navItems = new ArrayList<>();
-        navItems.add(new NavItem("#/home","Home","home"));
+        navItems.add(new NavItem("#/","Home","home"));
         navItems.add(new NavItem("#/auctions","Auctions","shopping cart"));
         if(role.equals(ADMIN)){
             navItems.add(new NavItem("#/items","Items","list"));

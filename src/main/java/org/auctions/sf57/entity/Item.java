@@ -1,5 +1,6 @@
 package org.auctions.sf57.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.auctions.sf57.dto.ItemDTO;
 import org.auctions.sf57.dto.UserDTO;
 
@@ -37,7 +38,8 @@ public class Item implements Serializable {
     @Column(name="sold", unique=false, nullable=false)
     private boolean sold;
 
-    @OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER, mappedBy="item")
+    @OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY, mappedBy="item")
+    @JsonManagedReference
     private Set<Auction> auctions = new HashSet<>();
 
     public Item(){}

@@ -51,10 +51,12 @@ public class User implements Serializable {
     @Size(max = 15)
     private String role;
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonManagedReference
     private Set<Auction> auctions = new HashSet<>();
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonManagedReference
     private Set<Bid> bids = new HashSet<>();
 
     public User() {

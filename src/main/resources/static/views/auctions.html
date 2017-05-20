@@ -1,0 +1,49 @@
+<div class="md-padding" ng-cloak>
+    <div>
+        <div layout="row">
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>Search</label>
+                <input type="text" ng-model="search">
+            </md-input-container>
+            <md-button class="md-fab md-primary" href="#/auctions/add">
+                <md-icon ng-bind="'add'"></md-icon>
+                <md-tooltip>Add auction</md-tooltip>
+            </md-button>
+        </div>
+    </div>
+</div>
+
+<table class="responsive-table">
+    <thead>
+    <tr>
+        <th ng-repeat="td in auctions_head_items">
+            <md-button md-no-ink data-ng-click="sort(td.name)">
+                {{td.title}} <md-icon ng-bind={{"td.icon"}}></md-icon>
+            </md-button>
+        </th>
+        <th><md-icon ng-bind="'arrow_drop_down'"></md-icon></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="auction in auctions |orderBy:orderByHead |filter:search">
+        <td><md-button href={{"#/auctions/"+auction.id}}> {{auction.id}}</md-button></td>
+        <td><md-button class="md-raised md-primary users-email" href={{"#/items/"+auction.item.id}}>
+            {{auction.item.name}}
+        </md-button></td>
+        <td>{{auction.item.description}}</td>
+        <td><md-button class="md-raised md-primary users-email" href={{"#/users/"+auction.user.id}}>
+            {{auction.user.email}}
+        </md-button></td>
+        <td>{{auction.startDate | date:'dd.MM.yyyy. HH:mm'}}</td>
+        <td>{{auction.endDate | date:'dd.MM.yyyy. HH:mm'}}</td>
+        <td>{{auction.startPrice}}</td>
+        <td>{{auction.item.sold}}</td>
+        <td>
+            <md-button class="md-fab" ng-click="delete_auction(auction)" ng-show="data.btn_delete_auction">
+                <md-icon ng-bind="'delete'"></md-icon>
+                <md-tooltip>Delete auction</md-tooltip>
+            </md-button>
+        </td>
+    </tr>
+    </tbody>
+</table>
