@@ -95,8 +95,10 @@ function Items($scope,$http,$mdDialog,$mdToast) {
                 if($scope.me!=null){
                     if($scope.me.role=="admin"){
                         $scope.data.btn_delete_item=true;
-                    }else{
+                    }else if($scope.me.role=="owner"){
                         $scope.data.btn_delete_item=false;
+                    }else{
+                        window.location.replace("#/")
                     }
                 }
             }

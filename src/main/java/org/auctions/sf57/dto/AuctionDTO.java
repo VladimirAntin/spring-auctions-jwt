@@ -1,5 +1,6 @@
 package org.auctions.sf57.dto;
 
+import org.auctions.sf57.config.Sf57Utils;
 import org.auctions.sf57.entity.Auction;
 import org.auctions.sf57.entity.Bid;
 import org.auctions.sf57.entity.Item;
@@ -16,22 +17,24 @@ import java.util.Set;
 public class AuctionDTO implements Serializable{
     private long id;
     private float startPrice;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private ItemDTO item;
     private UserDTO user;
-    private Set<Bid> bids = new HashSet<>();
 
     public AuctionDTO(){}
 
     public AuctionDTO(Auction auction){
         this.id = auction.getId();
         this.startPrice = auction.getStartPrice();
-        this.startDate = auction.getStartDate();
-        this.endDate = auction.getEndDate();
+        try{
+            this.startDate = Sf57Utils.sdf.format(auction.getStartDate());
+        }catch (Exception e){}
+        try{
+            this.endDate = Sf57Utils.sdf.format(auction.getEndDate());
+        }catch (Exception e){}
         this.item = new ItemDTO(auction.getItem());
         this.user = new UserDTO(auction.getUser());
-        this.bids = auction.getBids();
     }
 
     public long getId() {
@@ -52,20 +55,22 @@ public class AuctionDTO implements Serializable{
         return this;
     }
 
-    public Date getStartDate() {
+
+
+    public String getStartDate() {
         return startDate;
     }
 
-    public AuctionDTO setStartDate(Date startDate) {
+    public AuctionDTO setStartDate(String startDate) {
         this.startDate = startDate;
         return this;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public AuctionDTO setEndDate(Date endDate) {
+    public AuctionDTO setEndDate(String endDate) {
         this.endDate = endDate;
         return this;
     }
@@ -88,12 +93,4 @@ public class AuctionDTO implements Serializable{
         return this;
     }
 
-    public Set<Bid> getBids() {
-        return bids;
-    }
-
-    public AuctionDTO setBids(Set<Bid> bids) {
-        this.bids = bids;
-        return this;
-    }
 }

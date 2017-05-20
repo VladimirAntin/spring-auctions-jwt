@@ -4,7 +4,11 @@ import io.jsonwebtoken.Claims;
 import org.auctions.sf57.config.Sf57Utils;
 import org.auctions.sf57.dto.AuctionDTO;
 import org.auctions.sf57.entity.Auction;
+import org.auctions.sf57.entity.Item;
+import org.auctions.sf57.entity.User;
 import org.auctions.sf57.service.AuctionServiceInterface;
+import org.auctions.sf57.service.ItemServiceInterface;
+import org.auctions.sf57.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +29,12 @@ public class AuctionController {
 
     @Autowired
     private AuctionServiceInterface auctionService;
+
+    @Autowired
+    private ItemServiceInterface itemService;
+
+    @Autowired
+    private UserServiceInterface userService;
 
     @GetMapping(value = "/auctions")
     public ResponseEntity<List<AuctionDTO>> getAllAuctions(final HttpServletRequest request){
@@ -57,5 +67,36 @@ public class AuctionController {
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
+    @SuppressWarnings("unchecked")
+    @PostMapping(value = "/auctions")
+    public ResponseEntity<AuctionDTO> post_user(@RequestBody AuctionDTO auctionDTO, final HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        User user = userService.findOne(Sf57Utils.long_parser(claims.getSubject()));
+        if(user!=null){
+            Item item = itemService.findOne(auctionDTO.getItem().getId());
+            if(auctionDTO.getStartPrice()<=0){
+                return new ResponseEntity<AuctionDTO>(HttpStatus.CONFLICT);
+            }
+            try{
+                Auction auction = new Auction()
+                        .fromDTO(auctionDTO)
+                        .setUser(user)
+                        .setItem(item);
+                Date todayAt00 = new Date();
+                todayAt00.setHours(0);
+                if(auction.getStartDate().before(todayAt00)){
+                    return new ResponseEntity<AuctionDTO>(HttpStatus.CONFLICT);
+                }
+                if(auction.getEndDate()!=null && auction.getEndDate().before(auction.getStartDate())){
+                    return new ResponseEntity<AuctionDTO>(HttpStatus.CONFLICT);
+                }
+                auctionService.save(auction);
+                return new ResponseEntity<AuctionDTO>(new AuctionDTO(auction),HttpStatus.CREATED);
+            }catch (Exception e){
+                return new ResponseEntity<AuctionDTO>(HttpStatus.CONFLICT); //409
+            }
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
 
 }

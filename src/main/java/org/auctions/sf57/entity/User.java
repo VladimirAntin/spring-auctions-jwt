@@ -65,6 +65,7 @@ public class User implements Serializable {
     public User fromDTO(UserDTO userDTO) {
         this.name = userDTO.getName();
         this.email = userDTO.getEmail();
+        this.password = userDTO.getPassword();
         this.picture = userDTO.getPicture();
         this.address = userDTO.getAddress();
         this.phone = userDTO.getPhone();

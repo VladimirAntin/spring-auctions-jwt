@@ -22,7 +22,6 @@ public class ItemDTO implements Serializable {
     private String description;
     private String picture;
     private boolean sold;
-    private Set<Auction> auctions = new HashSet<>();
 
     public ItemDTO(){}
 
@@ -32,7 +31,6 @@ public class ItemDTO implements Serializable {
         this.description = item.getDescription();
         this.picture = item.getPicture();
         this.sold = item.isSold();
-        this.auctions = item.getAuctions();
     }
 
     public long getId() {
@@ -80,12 +78,4 @@ public class ItemDTO implements Serializable {
         return this;
     }
 
-    public Set<Auction> getAuctions() {
-        return auctions;
-    }
-
-    public ItemDTO setAuctions(Set<Auction> auctions) {
-        this.auctions = auctions;
-        return this;
-    }
 }

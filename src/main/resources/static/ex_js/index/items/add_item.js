@@ -2,7 +2,7 @@
  * Created by vladimir_antin on 19.5.17..
  */
 function Add_item($scope,$http,$mdToast) {
-    $scope.token = "jwt "+sessionStorage.getItem("jwt_token");
+    $scope.token = "jwt "+localStorage.getItem("jwt_token");
     $http({
         method: 'GET',
         url: '/api/me',

@@ -2,9 +2,12 @@ package org.auctions.sf57.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.auctions.sf57.config.Sf57Utils;
+import org.auctions.sf57.dto.AuctionDTO;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.*;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -47,6 +50,20 @@ public class Auction implements Serializable {
 
     public Auction(){}
 
+    public Auction fromDTO(AuctionDTO auctionDTO) {
+        this.startPrice= auctionDTO.getStartPrice();
+        try {
+            this.startDate = Sf57Utils.jsFormat.parse(auctionDTO.getStartDate());
+        } catch (ParseException e) {
+            this.startDate=null;
+        }
+        try {
+            this.endDate = Sf57Utils.jsFormat.parse(auctionDTO.getEndDate());
+        } catch (ParseException e) {
+            this.endDate=null;
+        }
+        return this;
+    }
     public long getId() {
         return id;
     }

@@ -5,11 +5,19 @@
                 <label>Search</label>
                 <input type="text" ng-model="search">
             </md-input-container>
-            <md-button class="md-fab md-primary" href="#/auctions/add">
-                <md-icon ng-bind="'add'"></md-icon>
-                <md-tooltip>Add auction</md-tooltip>
-            </md-button>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>Sold</label>
+                <md-select ng-model="itemSold" md-selected-text="isSold()">
+                    <md-optgroup label="Sold">
+                        <md-option value="{{sold_item.value}}" ng-repeat="sold_item in items_sold">{{sold_item.name}}</md-option>
+                    </md-optgroup>
+                </md-select>
+            </md-input-container>
         </div>
+        <md-button class="md-fab md-primary" href="#/auctions/add">
+            <md-icon ng-bind="'add'"></md-icon>
+            <md-tooltip>Add auction</md-tooltip>
+        </md-button>
     </div>
 </div>
 
@@ -25,7 +33,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="auction in auctions |orderBy:orderByHead |filter:search">
+    <tr ng-repeat="auction in auctions |orderBy:orderByHead |filter:search |filter:{item:{sold:itemSold}} ">
         <td><md-button href={{"#/auctions/"+auction.id}}> {{auction.id}}</md-button></td>
         <td><md-button class="md-raised md-primary users-email" href={{"#/items/"+auction.item.id}}>
             {{auction.item.name}}
@@ -34,8 +42,8 @@
         <td><md-button class="md-raised md-primary users-email" href={{"#/users/"+auction.user.id}}>
             {{auction.user.email}}
         </md-button></td>
-        <td>{{auction.startDate | date:'dd.MM.yyyy. HH:mm'}}</td>
-        <td>{{auction.endDate | date:'dd.MM.yyyy. HH:mm'}}</td>
+        <td>{{auction.startDate}}</td>
+        <td>{{auction.endDate}}</td>
         <td>{{auction.startPrice}}</td>
         <td>{{auction.item.sold}}</td>
         <td>

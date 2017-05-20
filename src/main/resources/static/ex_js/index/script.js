@@ -48,8 +48,8 @@ nav.controller('nav', function nav ($scope, $mdSidenav,$http) {
 nav.config(function ($routeProvider) {
     $routeProvider.
     when('/', {
-        templateUrl: 'views/items.html',
-        controller: 'items'
+        templateUrl: 'views/auctions.html',
+        controller: 'auctions'
     }).
     when('/logout', {
         template: '',
@@ -83,6 +83,10 @@ nav.config(function ($routeProvider) {
         templateUrl: 'views/auctions.html',
         controller: 'auctions'
     }).
+    when('/auctions/add', {
+        templateUrl: 'views/auctions/add_auction.html',
+        controller: 'add_auction'
+    }).
     otherwise({
         redirectTo: '/'
     });
@@ -100,3 +104,4 @@ nav.controller('items', Items);
 nav.controller('add_item', Add_item);
 nav.controller('item', Item);
 nav.controller('auctions', Auctions);
+nav.controller('add_auction', Add_auction);

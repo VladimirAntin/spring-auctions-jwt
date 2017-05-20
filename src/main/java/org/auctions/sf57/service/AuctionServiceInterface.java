@@ -1,6 +1,7 @@
 package org.auctions.sf57.service;
 
 import org.auctions.sf57.entity.Auction;
+import org.auctions.sf57.entity.User;
 
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,8 @@ public interface AuctionServiceInterface {
     Auction findOne(Long auction_id);
 
     List<Auction> findAll();
+
+    List<Auction> findAllByUser(User user);
 
     List<Auction> findAllOrderByStartDate(Date startDate);
 

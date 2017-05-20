@@ -66,7 +66,7 @@ public class ItemController {
 
     @SuppressWarnings("unchecked")
     @PostMapping(value = "/items")
-    public ResponseEntity<ItemDTO> post_user(@RequestBody ItemDTO itemDTO, final HttpServletRequest request){
+    public ResponseEntity<ItemDTO> postItem(@RequestBody ItemDTO itemDTO, final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
         if(role.equals(ADMIN) || role.equals(OWNER)){

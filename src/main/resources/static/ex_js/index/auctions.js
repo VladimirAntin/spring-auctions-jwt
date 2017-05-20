@@ -14,8 +14,19 @@ function Auctions($scope,$http,$mdDialog,$mdToast) {
         {title:"start date",icon:"arrow_drop_down", name:"startDate"},
         {title:"end date",icon:"arrow_drop_down", name:"endDate"},
         {title:"start price",icon:"arrow_drop_down", name:"startPrice"},
-        {title:"item sold",icon:"arrow_drop_down", name:"item.sold"}
+        {title:"sold",icon:"arrow_drop_down", name:"item.sold"}
     ];
+    $scope.items_sold = [
+        {name:"All auctions",value:""},
+        {name:"Sold",value:"true"},
+        {name:"Not sold",value:"false"}
+    ];
+    $scope.itemSold;
+    $scope.isSold = function() {
+        if ($scope.itemSold !== undefined) {
+            return $scope.itemSold.name;
+        }
+    };
 
     $scope.sort =function (name){
         angular.forEach($scope.auctions_head_items, function(value, key) {

@@ -5,6 +5,7 @@ import org.auctions.sf57.entity.Bid;
 import org.auctions.sf57.entity.User;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,8 +22,6 @@ public class UserDTO implements Serializable{
     private String address;
     private String phone;
     private String role;
-    private Set<Auction> auctions;
-    private Set<Bid> bids;
 
     public UserDTO(){}
 
@@ -33,8 +32,6 @@ public class UserDTO implements Serializable{
         this.picture = user.getPicture();
         this.address = user.getAddress();
         this.phone = user.getPhone();
-        this.auctions = user.getAuctions();
-        this.bids = user.getBids();
         this.role = user.getRole();
     }
 
@@ -119,21 +116,4 @@ public class UserDTO implements Serializable{
         return this;
     }
 
-    public Set<Auction> getAuctions() {
-        return auctions;
-    }
-
-    public UserDTO setAuctions(Set<Auction> auctions) {
-        this.auctions = auctions;
-        return this;
-    }
-
-    public Set<Bid> getBids() {
-        return bids;
-    }
-
-    public UserDTO setBids(Set<Bid> bids) {
-        this.bids = bids;
-        return this;
-    }
 }

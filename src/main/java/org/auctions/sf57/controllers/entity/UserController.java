@@ -1,8 +1,10 @@
 package org.auctions.sf57.controllers.entity;
 
 import org.auctions.sf57.config.Sf57Utils;
+import org.auctions.sf57.dto.AuctionDTO;
 import org.auctions.sf57.dto.UserDTO;
 import org.auctions.sf57.entity.User;
+import org.auctions.sf57.service.AuctionServiceInterface;
 import org.auctions.sf57.service.UserServiceInterface;
 import org.auctions.sf57.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class UserController {
     private UserServiceInterface userService;
 
     @Autowired
+    private AuctionServiceInterface auctionService;
+
+    @Autowired
     private StorageService storageService;
 
     private String ADMIN = "admin";
@@ -53,6 +58,14 @@ public class UserController {
         return new ResponseEntity<UserDTO>(new UserDTO(user), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/users/{id}/auctions")
+    public ResponseEntity<List<AuctionDTO>> getUserAuctions(@PathVariable("id") long id, final HttpServletRequest request){
+        User user = userService.findOne(id);
+        if(user==null){
+            return new ResponseEntity<List<AuctionDTO>>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<List<AuctionDTO>>(Sf57Utils.auctionsToDTO(auctionService.findAllByUser(user)), HttpStatus.OK);
+    }
 
     @SuppressWarnings("unchecked")
     @PostMapping(value = "/users")

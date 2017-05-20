@@ -7,6 +7,7 @@ import org.auctions.sf57.entity.Auction;
 import org.auctions.sf57.entity.Item;
 import org.auctions.sf57.entity.User;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,9 @@ import java.util.List;
  * Created by vladimir_antin on 16.5.17..
  */
 public class Sf57Utils {
+
+    public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    public static SimpleDateFormat jsFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     public static boolean contains(String first,String second){
         return first.toLowerCase().contains(second);

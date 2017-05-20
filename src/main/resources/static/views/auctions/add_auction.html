@@ -1,0 +1,45 @@
+<md-content class="md-padding">
+    <form name="add_form">
+        <md-input-container class="md-block">
+            <label class="md-headline">Start price</label>
+            <input autofocus required ng-model="auction.startPrice" class="md-headline" ng-change="change_inputs(add_form)"
+                   ng-pattern="/^\d+$/"/>
+            <div ng-messages="add_form.startPrice.$error" role="alert">
+                <div ng-message-exp="['pattern']">
+                    {{data.valid.startPrice}}
+                </div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label class="md-headline">Start date</label>
+            <input type="date" required ng-model="auction.startDate" min="{{currentDate}}" ng-change="change_inputs(add_form)">
+            <div ng-messages="add_form.startDate.$error" role="alert">
+                <div ng-message-exp="['min']">
+                    {{data.valid.startDate}}
+                </div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label class="md-headline">End date</label>
+            <input type="date" ng-model="auction.endDate" min="{{auction.startDate}}" ng-change="change_inputs(add_form)">
+            <div ng-messages="add_form.endDate.$error" role="alert">
+                <div ng-message-exp="['min']">
+                    {{data.valid.endDate}}
+                </div>
+            </div>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label class="md-headline">Item</label>
+            <md-select required ng-model="auction.item.id" md-selected-text="getSelectedItem()"  ng-change="change_inputs(add_form)">
+                <md-option value="{{item.id}}" ng-repeat="item in items">{{item.name}}</md-option>
+            </md-select>
+            <div class="errors" ng-messages="add_form.item.$error">
+                <div ng-message="required">{{data.valid.item}}</div>
+            </div>
+        </md-input-container>
+        <md-button class="md-fab md-primary" ng-click="save(add_form)" ng-disabled="data.btn_save">
+            <md-icon ng-bind="'save'"></md-icon>
+            <md-tooltip>Save</md-tooltip>
+        </md-button>
+    </form>
+</md-content>

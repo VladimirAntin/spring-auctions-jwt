@@ -9,6 +9,7 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
             btn_edit:false,
             btn_delete:false,
             btn_password:false,
+            btn_delete_auction:false,
             disable_change_role:true
         },
         btn_edit:{
@@ -31,6 +32,18 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
         if(response.status==200){
             $scope.user = response.data;
             $scope.me_service();
+        }
+    });
+    $http({
+        method: 'GET',
+        url: '/api/users/'+$routeParams.userId+"/auctions",
+        headers: {
+            "Content-type":"application/json",
+            "Authorization":$scope.token
+        }
+    }).then(function(response) {
+        if(response.status==200){
+            $scope.auctions = response.data;
         }
     });
     $scope.openDeleteMode = function (user) {
@@ -81,7 +94,9 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
                         $scope.data.show.btn_edit=true;
                         $scope.data.show.btn_password=true;
                         $scope.data.show.btn_delete=false;
+                        $scope.data.show.btn_delete_auction=true;
                     }else if($scope.me.role=="admin"){
+                        $scope.data.show.btn_delete_auction=true;
                         $scope.data.show.btn_edit=true;
                         $scope.data.show.btn_password=true;
                         if($scope.me.email==$scope.user.email){
@@ -90,6 +105,7 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
                             $scope.data.show.btn_delete=true;
                         }
                     }else{
+                        $scope.data.show.btn_delete_auction=false;
                         $scope.data.show.btn_edit=false;
                         $scope.data.show.btn_password=false;
                         $scope.data.show.btn_delete=false;
@@ -198,4 +214,38 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
             }
         });
     };
+
+    $scope.auctions_head_items = [
+        {title:"id",icon:"arrow_drop_down", name:"id"},
+        {title:"item name",icon:"arrow_drop_down", name:"item.id"},
+        {title:"start date",icon:"arrow_drop_down", name:"startDate"},
+        {title:"end date",icon:"arrow_drop_down", name:"endDate"},
+        {title:"start price",icon:"arrow_drop_down", name:"startPrice"},
+        {title:"sold",icon:"arrow_drop_down", name:"item.sold"}
+    ];
+    $scope.items_sold = [
+        {name:"All auctions",value:""},
+        {name:"Sold",value:"true"},
+        {name:"Not sold",value:"false"}
+    ];
+    $scope.itemSold;
+    $scope.isSold = function() {
+        if ($scope.itemSold !== undefined) {
+            return $scope.itemSold.name;
+        }
+    };
+    $scope.sort =function (name,sort_items){
+        angular.forEach($scope.sort_items, function(value, key) {
+            if(value.name==name){
+                if(value.icon == "arrow_drop_down"){
+                    value.icon = "arrow_drop_up";
+                    $scope.orderByHead = "-"+name;
+                }else{
+                    value.icon = "arrow_drop_down";
+                    $scope.orderByHead = name;
+                }
+            }
+        });
+    };
+
 }

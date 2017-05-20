@@ -49,7 +49,6 @@ public class Item implements Serializable {
         this.description = itemDTO.getDescription();
         this.picture = itemDTO.getPicture();
         this.sold = itemDTO.isSold();
-        this.auctions = itemDTO.getAuctions();
         return this;
     }
 
