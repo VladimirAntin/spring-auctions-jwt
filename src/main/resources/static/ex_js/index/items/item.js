@@ -117,22 +117,16 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
         }
     };
 
-    $scope.change_photo = function () {
-        $.ajax({
-            url: 'api/items/'+$scope.item.id+'/upload',
-            type: 'POST',
-            headers:{
-                "Authorization":$scope.token
-            },
-            data: new FormData($('form')[0]),
-            cache: false,
-            contentType: false,
-            processData: false,
-            statusCode:{
-                200:function (response) {
-                    window.location.reload();
-                }
-            }
+    $scope.change_photo = function (files) {
+        var fd = new FormData();
+        fd.append("file", files[0]);
+        $http.post('api/items/'+$scope.item.id+'/upload', fd, {
+            headers: { 'Content-Type': undefined,"Authorization":$scope.token},
+            transformRequest: angular.identity
+        }).success(function (data) {
+            window.location.reload();
+        }).error(function (data) {
+
         });
     };
     $scope.auctions_head_items = [

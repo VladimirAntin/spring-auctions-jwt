@@ -24,7 +24,7 @@
                     </div>
                     <label class="md-button md-raised md-primary" id="file">Change photo
                     <input type="file" name="file" accept="image/*"
-                           onchange="angular.element(this).scope().change_photo()" ng-show="data.show.btn_edit"/>
+                           onchange="angular.element(this).scope().change_photo(this.files)" ng-show="data.show.btn_edit"/>
                     </label>
                     <md-input-container class="md-block">
                         <label class="md-headline">Name and surname</label>
