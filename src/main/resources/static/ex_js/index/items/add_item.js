@@ -7,7 +7,7 @@ function Add_item($scope,$http,$mdToast) {
         $scope.me=me;
         if ($scope.me != null) {
             if ($scope.me.role == "bidder") {
-                window.location.replace("#/home");
+                window.location.replace("/401/items/add");
             }
         }
     });
@@ -51,7 +51,6 @@ function Add_item($scope,$http,$mdToast) {
             }, function error(response) {
                 if(response.status==409){
                     toast_message("Conflict, name is not valid","Ok",$mdToast);
-
                 }
             });
         }

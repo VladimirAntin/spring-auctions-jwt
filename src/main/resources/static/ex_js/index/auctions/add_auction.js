@@ -23,7 +23,7 @@ function Add_auction($scope,$http,$mdToast) {
     $scope.auction ={
         startPrice:"",
         startDate:new Date(),
-        endDate:new Date(),
+        endDate:"",
         item:{id:1}
     };
     $scope.data={

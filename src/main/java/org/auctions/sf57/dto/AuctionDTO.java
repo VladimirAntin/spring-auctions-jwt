@@ -55,8 +55,6 @@ public class AuctionDTO implements Serializable{
         return this;
     }
 
-
-
     public String getStartDate() {
         return startDate;
     }

@@ -18,17 +18,30 @@
                         <label class="md-headline">Descritpion</label>
                         <input class="md-headline" ng-model="auction.item.description" disabled>
                     </md-input-container>
-                    <md-input-container class="md-block">
-                        <label class="md-headline">Start date</label>
-                        <input class="md-headline" ng-model="auction.startDate" ng-disabled="data.show.disable_input">
-                    </md-input-container>
-                    <md-input-container class="md-block">
-                        <label class="md-headline">End date</label>
-                        <input class="md-headline" ng-model="auction.endDate" ng-disabled="data.show.disable_input">
-                    </md-input-container>
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block">
+                            <label class="md-headline">Start date</label>
+                            <input required class="md-headline" ng-model="auction.startDate" ng-disabled="data.show.disable_start_date"
+                                    type="date">
+                        </md-input-container>
+                        <md-input-container class="md-block">
+                            <label class="md-headline">End date</label>
+                            <input class="md-headline" ng-model="auction.endDate" ng-disabled="data.show.disable_inputs"
+                                   min="{{auction.startDate}}" type="date">
+                            <div ng-messages="edit_form.endDate.$error" role="alert">
+                                <div ng-message-exp="['min']">
+                                </div>
+                            </div>
+                        </md-input-container>
+                    </div>
                     <md-input-container class="md-block">
                         <label class="md-headline">Start price</label>
-                        <input class="md-headline" ng-model="auction.startPrice" ng-disabled="data.show.disable_input">
+                        <input class="md-headline" ng-model="auction.startPrice" ng-disabled="data.show.disable_inputs"
+                               ng-pattern="/^\d+$/">
+                        <div ng-messages="edit_form.startPrice.$error" role="alert">
+                            <div ng-message-exp="['pattern']">
+                            </div>
+                        </div>
                     </md-input-container>
                     <md-switch ng-model="auction.item.sold" aria-label="Sold" disabled>
                         {{ auction.item.sold?"Sold":"Not sold" }}

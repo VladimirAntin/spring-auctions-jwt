@@ -43,8 +43,7 @@ function Users($scope,$http,$mdDialog,$mdToast) {
         }
     },function error(response) {
         if(response.status==401){
-            toast_message("Unauthorized, you do not have access","Ok",$mdToast);
-            window.location.replace("/home")
+            window.location.replace("/401/users/");
         }else if(response.status>=500){
             toast_message("Server Error","Ok",$mdToast);
         }

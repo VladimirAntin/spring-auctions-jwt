@@ -70,3 +70,16 @@ function sort($scope,name,sort_items) {
     });
 }
 
+
+function parse_date(date) {
+    try{
+        var dateParts = date.split("/");
+        d = dateParts[0];
+        m = dateParts[1]-1; // problems parsing month, counting m+1, I'm returning it
+        y = dateParts[2];
+        return new Date(y,m,d);
+    }catch(e){
+        return null;
+    }
+}
+

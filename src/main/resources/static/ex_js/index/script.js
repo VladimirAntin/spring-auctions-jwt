@@ -92,7 +92,9 @@ nav.config(function ($routeProvider) {
         controller: 'auction'
     }).
     otherwise({
-        redirectTo: '/'
+        redirectTo: function() {
+            window.location.replace("/404");
+        }
     });
 });
 

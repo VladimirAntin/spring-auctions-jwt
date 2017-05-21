@@ -10,24 +10,26 @@
                 </div>
             </div>
         </md-input-container>
-        <md-input-container class="md-block">
-            <label class="md-headline">Start date</label>
-            <input type="date" required ng-model="auction.startDate" min="{{currentDate}}" ng-change="change_inputs(add_form)">
-            <div ng-messages="add_form.startDate.$error" role="alert">
-                <div ng-message-exp="['min']">
-                    {{data.valid.startDate}}
+        <div layout-gt-sm="row">
+            <md-input-container class="md-block">
+                <label class="md-headline">Start date</label>
+                <input type="date" required ng-model="auction.startDate" min="{{currentDate}}" ng-change="change_inputs(add_form)">
+                <div ng-messages="add_form.startDate.$error" role="alert">
+                    <div ng-message-exp="['min']">
+                        {{data.valid.startDate}}
+                    </div>
                 </div>
-            </div>
-        </md-input-container>
-        <md-input-container class="md-block">
-            <label class="md-headline">End date</label>
-            <input type="date" ng-model="auction.endDate" min="{{auction.startDate}}" ng-change="change_inputs(add_form)">
-            <div ng-messages="add_form.endDate.$error" role="alert">
-                <div ng-message-exp="['min']">
-                    {{data.valid.endDate}}
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label class="md-headline">End date</label>
+                <input type="date" ng-model="auction.endDate" min="{{auction.startDate}}" ng-change="change_inputs(add_form)">
+                <div ng-messages="add_form.endDate.$error" role="alert">
+                    <div ng-message-exp="['min']">
+                        {{data.valid.endDate}}
+                    </div>
                 </div>
-            </div>
-        </md-input-container>
+            </md-input-container>
+        </div>
         <md-input-container class="md-block">
             <label class="md-headline">Item</label>
             <md-select required ng-model="auction.item.id" md-selected-text="getSelectedItem()"  ng-change="change_inputs(add_form)">

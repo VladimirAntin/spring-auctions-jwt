@@ -58,6 +58,10 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
 
             });
         }
+    },function error(response) {
+        if(response.status==404){
+            window.location.replace("/404/users/"+$routeParams.userId);
+        }
     });
     $http({
         method: 'GET',
@@ -76,11 +80,11 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
     };
 
     $scope.edit_mode = function (edit_form) {
-        if($scope.data.show.disable_input){
+        if($scope.data.show.disable_inputs){
             if($scope.me.role=="admin"){
                 $scope.data.show.disable_change_role = false;
             }
-            $scope.data.show.disable_input = false;
+            $scope.data.show.disable_inputs = false;
             $scope.data.btn_edit.icon = "save";
             $scope.data.btn_edit.tooltip = "Save";
         }else if (edit_form.$valid){
@@ -95,7 +99,7 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
             }).then(function done(response) {
                 if(response.status==200){
                     toast_message("User updated!","Ok",$mdToast);
-                    $scope.data.show.disable_input = true;
+                    $scope.data.show.disable_inputs = true;
                     $scope.data.show.disable_change_role = true;
                     $scope.data.btn_edit.icon = "edit_mode";
                     $scope.data.btn_edit.tooltip = "Update user";

@@ -2,10 +2,13 @@
  * Created by vladimir_antin on 20.5.17..
  */
 function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
+    $scope.current_date = new Date();
     $scope.token = "jwt "+localStorage.getItem("jwt_token");
     $scope.data = {
         show:{
-            disable_input:true,
+            disable_inputs:true,
+            disable_start_date:true,
+            disable_end_date:true,
             btn_edit:false,
             btn_delete:false
         },
@@ -22,9 +25,11 @@ function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
             "Content-type":"application/json",
             "Authorization":$scope.token
         }
-    }).then(function(response) {
+    }).then(function done(response) {
         if(response.status==200){
             $scope.auction = response.data;
+            $scope.auction.startDate = parse_date($scope.auction.startDate);
+            $scope.auction.endDate = parse_date($scope.auction.endDate);
             me_service($http,$scope, function (me) {
                 $scope.me=me;
                 if($scope.me!=null){
@@ -36,14 +41,23 @@ function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
                 }
             });
         }
+    },function error(response) {
+        if(response.status==404){
+            window.location.replace("/404/auctions/"+$routeParams.auctionId);
+        }
     });
     $scope.openDeleteMode = function (auction) {
         delete_auction(auction,$scope,$http,$mdDialog,$mdToast);
     };
 
     $scope.edit_mode = function (edit_form) {
-        if($scope.data.show.disable_input){
-            $scope.data.show.disable_input = false;
+        if($scope.data.show.disable_inputs){
+            if(Date.parse($scope.auction.startDate)>Date.parse($scope.current_date)){
+                $scope.data.show.disable_start_date=false;
+            }else{
+                $scope.data.show.disable_start_date=true;
+            }
+            $scope.data.show.disable_inputs = false;
             $scope.data.btn_edit.icon = "save";
             $scope.data.btn_edit.tooltip = "Save";
         }else if (edit_form.$valid){
@@ -57,14 +71,18 @@ function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
                 data:$scope.auction
             }).then(function done(response) {
                 if(response.status==200){
-                    toast_message("Item updated!","Ok",$mdToast);
-                    $scope.data.show.disable_input = true;
+                    toast_message("Auction updated!","Ok",$mdToast);
+                    $scope.data.show.disable_inputs = true;
+                    $scope.data.show.disable_start_date=true;
+                    $scope.data.show.disable_end_date=true;
                     $scope.data.btn_edit.icon = "edit_mode";
-                    $scope.data.btn_edit.tooltip = "Update item";
+                    $scope.data.btn_edit.tooltip = "Update auction";
                 }
             },function error(response) {
-                if(response.status==401){
-                    toast_message("Unauthorized","Ok",$mdToast);
+                if(response.status==409){
+                    toast_message("Conflict, problems with start date or end date","Ok",$mdToast);
+                }else if(response.status=403){
+                    toast_message("Form is not valid","Ok",$mdToast);
                 }
             });
         }else{

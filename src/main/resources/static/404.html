@@ -1,0 +1,15 @@
+<html>
+    <body>
+        <h1>Whitelabel Error Page</h1>
+        <p>This application has no explicit mapping for /error, so you are seeing this as a fallback.</p>
+        <div id="date"></div>
+        <div>There was an unexpected error (type=Not Found, status=404).</div>
+        <div id="link"></div>
+        <div id="resource"></div>
+        <script>
+            document.getElementById("date").innerHTML = "Created "+Date();
+            document.getElementById("link").innerHTML = "Host: " +window.location.host;
+            document.getElementById("resource").innerHTML = "Path: "+window.location.host+"#/"+(window.location.pathname).substring(5);
+        </script>
+    </body>
+</html>

@@ -41,6 +41,10 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
                 }
             });
         }
+    },function error(response) {
+        if(response.status==404){
+            window.location.replace("/404/items/"+$routeParams.itemId);
+        }
     });
     $http({
         method: 'GET',
@@ -83,8 +87,8 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
     };
 
     $scope.edit_mode = function (edit_form) {
-        if($scope.data.show.disable_input){
-            $scope.data.show.disable_input = false;
+        if($scope.data.show.disable_inputs){
+            $scope.data.show.disable_inputs = false;
             $scope.data.btn_edit.icon = "save";
             $scope.data.btn_edit.tooltip = "Save";
         }else if (edit_form.$valid){
@@ -99,7 +103,7 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
             }).then(function done(response) {
                 if(response.status==200){
                     toast_message("Item updated!","Ok",$mdToast);
-                    $scope.data.show.disable_input = true;
+                    $scope.data.show.disable_inputs = true;
                     $scope.data.btn_edit.icon = "edit_mode";
                     $scope.data.btn_edit.tooltip = "Update item";
                 }

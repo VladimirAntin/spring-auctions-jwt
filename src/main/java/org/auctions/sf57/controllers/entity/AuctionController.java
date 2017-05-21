@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -98,5 +99,45 @@ public class AuctionController {
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
-
+    @SuppressWarnings("unchecked")
+    @PutMapping(value = "/auctions/{id}")
+    public ResponseEntity<AuctionDTO> updateUserById(@PathVariable("id") long id, @RequestBody AuctionDTO auctionDTO,final HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        if(auctionDTO==null){
+            return new ResponseEntity<AuctionDTO>(HttpStatus.NO_CONTENT);
+        }
+        Auction auction = auctionService.findOne(id);
+        if(auction==null){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        if(auctionDTO.getStartPrice()<=0){
+            auction.setStartPrice(auctionDTO.getStartPrice());
+        }
+        try{
+            Date startDate = Sf57Utils.jsFormat.parse(auctionDTO.getStartDate());
+            Date endDate = null;
+            if(auctionDTO.getEndDate()!=null){
+                try {
+                    endDate = Sf57Utils.jsFormat.parse(auctionDTO.getEndDate());
+                }catch (ParseException e){
+                }
+            }
+            Date todayAt00 = new Date();
+            todayAt00.setHours(0);
+            if(!startDate.before(todayAt00)){
+                auction.setStartDate(startDate);
+            }
+            if(endDate!=null && endDate.after(auction.getStartDate()) && endDate.after(todayAt00)){
+                auction.setEndDate(endDate);
+            }else if(endDate==null){
+                auction.setEndDate(null);
+            }else{
+                throw new Exception("Not greater than today");
+            }
+            auctionService.save(auction);
+            return new ResponseEntity<AuctionDTO>(new AuctionDTO(auction),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
+    }
 }

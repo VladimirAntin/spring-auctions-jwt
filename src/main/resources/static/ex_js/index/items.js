@@ -37,7 +37,7 @@ function Items($scope,$http,$mdDialog,$mdToast) {
                     }else if($scope.me.role=="owner"){
                         $scope.data.btn_delete_item=false;
                     }else{
-                        window.location.replace("#/")
+                        window.location.replace("/404/items");
                     }
                 }
             });
