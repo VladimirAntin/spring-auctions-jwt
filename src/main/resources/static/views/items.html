@@ -26,12 +26,13 @@
     </thead>
     <tbody>
     <tr ng-repeat="item in items |orderBy:orderByHead |filter:search">
-        <td><md-button href={{"#/items/"+item.id}}> {{item.id}}</md-button></td>
+        <td><md-button href={{"#/items/"+item.id}} class="md-raised"
+                       style="background: gold"> {{item.id}}</md-button></td>
         <td>{{item.name}}</td>
         <td>{{item.description}}</td>
         <td>{{item.sold}}</td>
         <td>
-            <md-button class="md-fab" ng-click="delete_item(item)" ng-show="data.btn_delete_item">
+            <md-button class="md-fab" style="background: red" ng-click="delete_item(item)" ng-show="data.btn_delete_item">
                 <md-icon ng-bind="'delete'"></md-icon>
                 <md-tooltip>Delete item</md-tooltip>
             </md-button>

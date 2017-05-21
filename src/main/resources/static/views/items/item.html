@@ -34,7 +34,7 @@
                         <md-icon ng-bind="data.btn_edit.icon"></md-icon>
                         <md-tooltip>{{data.btn_edit.tooltip}}</md-tooltip>
                     </md-button>
-                    <md-button class="md-fab" ng-click="openDeleteMode(item)" ng-show="data.show.btn_delete">
+                    <md-button class="md-fab" style="background:red" ng-click="openDeleteMode(item)" ng-show="data.show.btn_delete">
                         <md-icon ng-bind="'delete'"></md-icon>
                         <md-tooltip>Delete item</md-tooltip>
                     </md-button>
@@ -76,7 +76,8 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="auction in auctions |orderBy:orderByHead |filter:search_auctions |filter:{item:{sold:itemSold}} ">
-                        <td><md-button href={{"#/auctions/"+auction.id}}> {{auction.id}}</md-button></td>
+                        <td><md-button href={{"#/auctions/"+auction.id}} class="md-raised"
+                                       style="background: lightgray"> {{auction.id}}</md-button></td>
                         <td><md-button class="md-raised md-primary users-email" href={{"#/users/"+auction.user.id}}>
                             {{auction.user.email}}
                         </md-button></td>
@@ -85,7 +86,7 @@
                         <td>{{auction.startPrice}}</td>
                         <td>{{auction.item.sold}}</td>
                         <td>
-                            <md-button class="md-fab" ng-click="delete_auction(auction)" ng-show="data.show.btn_delete_auction">
+                            <md-button class="md-fab" style="background:red" ng-click="delete_auction(auction)" ng-show="data.show.btn_delete_auction">
                                 <md-icon ng-bind="'delete'"></md-icon>
                                 <md-tooltip>Delete auction</md-tooltip>
                             </md-button>

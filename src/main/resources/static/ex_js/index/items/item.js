@@ -126,7 +126,7 @@ function Item($scope,$http,$routeParams,$mdDialog,$mdToast) {
         }).success(function (data) {
             window.location.reload();
         }).error(function (data) {
-
+            toast_message("Error, format or size is not valid","Ok",$mdToast);
         });
     };
     $scope.auctions_head_items = [

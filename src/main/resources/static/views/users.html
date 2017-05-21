@@ -34,14 +34,14 @@
     </thead>
     <tbody>
     <tr ng-repeat="user in users |orderBy:orderByHead |filter:search |filter:{role:selectedRole} ">
-        <td><md-button href={{"#/users/"+user.id}}> {{user.id}}</md-button></td>
+        <td><md-button href={{"#/users/"+user.id}} class="md-raised md-primary"> {{user.id}}</md-button></td>
         <td>{{user.name}}</td>
         <td><md-button class="md-raised md-primary users-email" href={{"#/users/"+user.id}}> {{user.email}}</md-button></td>
         <td>{{user.address}}</td>
         <td>{{user.phone}}</td>
         <td>{{user.role}}</td>
         <td>
-            <md-button class="md-fab" ng-click="delete_user(user)">
+            <md-button class="md-fab" style="background: red" ng-click="delete_user(user)">
                 <md-icon ng-bind="'delete'"></md-icon>
                 <md-tooltip>Delete user</md-tooltip>
             </md-button>
