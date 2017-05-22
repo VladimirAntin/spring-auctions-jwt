@@ -33,19 +33,16 @@ public class ItemController {
     private ItemServiceInterface itemService;
 
     @Autowired
-    private AuctionServiceInterface auctionService;
-
-    @Autowired
     private StorageService storageService;
 
     @GetMapping(value = "/items")
-    public ResponseEntity<List<ItemDTO>> getAllItems(final HttpServletRequest request){
+    public ResponseEntity<List<ItemDTO>> getAllItems(){
         List<ItemDTO> itemsDTO = Sf57Utils.itemsToDTO(itemService.findAll());
         return new ResponseEntity<List<ItemDTO>>(itemsDTO, HttpStatus.OK);
     }
 
     @GetMapping(value="/items/{id}")
-    public ResponseEntity<ItemDTO> getItemById(@PathVariable("id") long id,final HttpServletRequest request){
+    public ResponseEntity<ItemDTO> getItemById(@PathVariable("id") long id){
         Item item = itemService.findOne(id);
         if (item==null){
             return new ResponseEntity<ItemDTO>(HttpStatus.NOT_FOUND);
@@ -54,13 +51,13 @@ public class ItemController {
     }
 
     @GetMapping(value="/items/{id}/auctions")
-    public ResponseEntity<List<AuctionDTO>> getItemAuctions(@PathVariable("id") long id, final HttpServletRequest request){
+    public ResponseEntity<List<AuctionDTO>> getItemAuctions(@PathVariable("id") long id){
         Item item = itemService.findOne(id);
         if (item==null){
             return new ResponseEntity<List<AuctionDTO>>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<List<AuctionDTO>>(
-                Sf57Utils.auctionsToDTO(auctionService.findAllByItem(item)),HttpStatus.OK);
+                Sf57Utils.auctionsToDTO(item.getAuctions()),HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")

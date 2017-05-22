@@ -12,7 +12,17 @@ function Items($scope,$http,$mdDialog,$mdToast) {
         {name:"description",icon:"arrow_drop_down"},
         {name:"sold",icon:"arrow_drop_down"}
     ];
-
+    $scope.items_sold = [
+        {name:"All auctions",value:""},
+        {name:"Sold",value:"true"},
+        {name:"Not sold",value:"false"}
+    ];
+    $scope.itemSold;
+    $scope.isSold = function() {
+        if ($scope.itemSold !== undefined) {
+            return $scope.itemSold.name;
+        }
+    };
 
     $scope.sort =function (name,sort_items){
         sort($scope,name,sort_items);

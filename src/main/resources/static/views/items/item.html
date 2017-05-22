@@ -78,7 +78,7 @@
                     <tr ng-repeat="auction in auctions |orderBy:orderByHead |filter:search_auctions |filter:{item:{sold:itemSold}} ">
                         <td><md-button href={{"#/auctions/"+auction.id}} class="md-raised"
                                        style="background: lightgray"> {{auction.id}}</md-button></td>
-                        <td><md-button class="md-raised md-primary users-email" href={{"#/users/"+auction.user.id}}>
+                        <td><md-button class="md-raised md-primary none-decoration" href={{"#/users/"+auction.user.id}}>
                             {{auction.user.email}}
                         </md-button></td>
                         <td>{{auction.startDate}}</td>

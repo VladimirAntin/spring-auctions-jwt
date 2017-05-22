@@ -36,11 +36,11 @@
     <tr ng-repeat="auction in auctions |orderBy:orderByHead |filter:search |filter:{item:{sold:itemSold}} ">
         <td><md-button href={{"#/auctions/"+auction.id}} class="md-raised"
                        style="background: yellow"> {{auction.id}}</md-button></td>
-        <td><md-button class="md-raised md-primary users-email" href={{"#/items/"+auction.item.id}}>
+        <td><md-button class="md-raised md-primary none-decoration" href={{"#/items/"+auction.item.id}}>
             {{auction.item.name}}
         </md-button></td>
         <td>{{auction.item.description}}</td>
-        <td><md-button class="md-raised users-email"  style="background: gold" href={{"#/users/"+auction.user.id}}>
+        <td><md-button class="md-raised none-decoration" style="background: gold" href={{"#/users/"+auction.user.id}}>
             {{auction.user.email}}
         </md-button></td>
         <td>{{auction.startDate}}</td>

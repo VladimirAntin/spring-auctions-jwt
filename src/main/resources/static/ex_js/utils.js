@@ -14,7 +14,7 @@ function toast_message(text,btn_ok,mdToast) {
 function delete_auction(auction,$scope,$http,$mdDialog,$mdToast){
     var confirm = $mdDialog.confirm()
         .title('Do you sure?')
-        .textContent('item with id: "'+auction.id+'" will be deleted')
+        .textContent('Auction with id: "'+auction.id+'" will be deleted')
         .ok('Ok')
         .cancel('Cancel');
     $mdDialog.show(confirm).then(function() {
@@ -30,6 +30,36 @@ function delete_auction(auction,$scope,$http,$mdDialog,$mdToast){
                 indexAuction = $scope.auctions.indexOf(auction);
                 $scope.auctions.splice(indexAuction,1);
                 toast_message("Auction deleted!","Ok",$mdToast);
+            }
+        },function error(response) {
+            if(response.status==401){
+                toast_message("Unauthorized, it is your account","Ok",$mdToast);
+            }else if(response.status>=500){
+                toast_message("Server Error","Ok",$mdToast);
+            }
+        });
+    });
+}
+
+function delete_bid(bid,$scope,$http,$mdDialog,$mdToast){
+    var confirm = $mdDialog.confirm()
+        .title('Do you sure?')
+        .textContent('Bid with id: "'+bid.id+'" will be deleted')
+        .ok('Ok')
+        .cancel('Cancel');
+    $mdDialog.show(confirm).then(function() {
+        $http({
+            method : "DELETE",
+            url : "/api/bids/"+bid.id,
+            headers:{
+                "Content-type":"application/json",
+                "Authorization":$scope.token
+            }
+        }).then(function (response) {
+            if(response.status ==204){
+                indexBid = $scope.bids.indexOf(bid);
+                $scope.bids.splice(indexBid,1);
+                toast_message("Bid deleted!","Ok",$mdToast);
             }
         },function error(response) {
             if(response.status==401){

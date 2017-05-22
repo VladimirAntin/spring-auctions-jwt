@@ -1,14 +1,17 @@
 package org.auctions.sf57.config;
 
 import org.auctions.sf57.dto.AuctionDTO;
+import org.auctions.sf57.dto.BidDTO;
 import org.auctions.sf57.dto.ItemDTO;
 import org.auctions.sf57.dto.UserDTO;
 import org.auctions.sf57.entity.Auction;
+import org.auctions.sf57.entity.Bid;
 import org.auctions.sf57.entity.Item;
 import org.auctions.sf57.entity.User;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -47,7 +50,7 @@ public class Sf57Utils {
         return false;
     }
 
-    public static List<UserDTO> usersToDTO(List<User> users){
+    public static List<UserDTO> usersToDTO(Collection<User> users){
         List<UserDTO> usersDTO = new ArrayList<>();
         for (User user:users) {
             usersDTO.add(new UserDTO(user));
@@ -55,19 +58,27 @@ public class Sf57Utils {
         return usersDTO;
     }
 
-    public static List<ItemDTO> itemsToDTO(List<Item> items){
+    public static List<ItemDTO> itemsToDTO(Collection<Item> items){
         List<ItemDTO> itemsDTO = new ArrayList<>();
         for (Item item:items) {
             itemsDTO.add(new ItemDTO(item));
         }
         return itemsDTO;
     }
-    public static List<AuctionDTO> auctionsToDTO(List<Auction> auctions){
+    public static List<AuctionDTO> auctionsToDTO(Collection<Auction> auctions){
         List<AuctionDTO> auctionDTO = new ArrayList<>();
         for (Auction auction:auctions) {
             auctionDTO.add(new AuctionDTO(auction));
         }
         return auctionDTO;
+    }
+
+    public static List<BidDTO> bidsToDTO(Collection<Bid> bids){
+        List<BidDTO> bidDTO = new ArrayList<>();
+        for (Bid bid:bids) {
+            bidDTO.add(new BidDTO(bid));
+        }
+        return bidDTO;
     }
 
 }

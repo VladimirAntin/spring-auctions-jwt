@@ -3,10 +3,12 @@ package org.auctions.sf57.controllers.entity;
 import io.jsonwebtoken.Claims;
 import org.auctions.sf57.config.Sf57Utils;
 import org.auctions.sf57.dto.AuctionDTO;
+import org.auctions.sf57.dto.BidDTO;
 import org.auctions.sf57.entity.Auction;
 import org.auctions.sf57.entity.Item;
 import org.auctions.sf57.entity.User;
 import org.auctions.sf57.service.AuctionServiceInterface;
+import org.auctions.sf57.service.BidServiceInterface;
 import org.auctions.sf57.service.ItemServiceInterface;
 import org.auctions.sf57.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +40,27 @@ public class AuctionController {
     private UserServiceInterface userService;
 
     @GetMapping(value = "/auctions")
-    public ResponseEntity<List<AuctionDTO>> getAllAuctions(final HttpServletRequest request){
+    public ResponseEntity<List<AuctionDTO>> getAllAuctions(){
         List<AuctionDTO> auctionsDTO = Sf57Utils.auctionsToDTO(auctionService.findAll());
         return new ResponseEntity<List<AuctionDTO>>(auctionsDTO, HttpStatus.OK);
     }
 
     @GetMapping(value="/auctions/{id}")
-    public ResponseEntity<AuctionDTO> getItemById(@PathVariable("id") long id, final HttpServletRequest request){
+    public ResponseEntity<AuctionDTO> getItemById(@PathVariable("id") long id){
         Auction auction = auctionService.findOne(id);
         if(auction==null){
             return new ResponseEntity<AuctionDTO>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<AuctionDTO>(new AuctionDTO(auction),HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/auctions/{id}/bids")
+    public ResponseEntity<List<BidDTO>> getAuctionBids(@PathVariable("id") long id){
+        Auction auction = auctionService.findOne(id);
+        if(auction==null){
+            return new ResponseEntity<List<BidDTO>>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<List<BidDTO>>(Sf57Utils.bidsToDTO(auction.getBids()), HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
@@ -110,7 +121,7 @@ public class AuctionController {
         if(auction==null){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        if(auctionDTO.getStartPrice()<=0){
+        if(auctionDTO.getStartPrice()>=0){
             auction.setStartPrice(auctionDTO.getStartPrice());
         }
         try{

@@ -100,7 +100,7 @@
                     <tr ng-repeat="auction in auctions |orderBy:orderByHead |filter:search_auctions |filter:{item:{sold:itemSold}} ">
                         <td><md-button href={{"#/auctions/"+auction.id}} class="md-raised"
                                        style="background: gold"> {{auction.id}}</md-button></td>
-                        <td><md-button class="md-raised md-primary users-email" href={{"#/items/"+auction.item.id}}>
+                        <td><md-button class="md-raised md-primary none-decoration" href={{"#/items/"+auction.item.id}}>
                             {{auction.item.name}}
                         </md-button></td>
                         <td>{{auction.startDate}}</td>
@@ -120,7 +120,47 @@
         </md-tab>
         <md-tab label="bids">
             <md-content class="md-padding">
-                <h1 class="md-display-2">Bids</h1>
+                <div>
+                    <div layout="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Search</label>
+                            <input type="text" ng-model="search_bids">
+                        </md-input-container>
+                    </div>
+                </div>
+                <table class="responsive-table">
+                    <thead>
+                    <tr>
+                        <th ng-repeat="td in bids_head_items">
+                            <md-button md-no-ink data-ng-click="sort(td.name,bids_head_items)">
+                                {{td.title}} <md-icon ng-bind={{"td.icon"}}></md-icon>
+                            </md-button>
+                        </th>
+                        <th><md-icon ng-bind="'arrow_drop_down'"></md-icon></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="bid in bids |orderBy:orderByHead |filter:search_bids ">
+                        <td><md-button href={{"#/bids/"+bid.id}} class="md-raised"
+                                       style="background: gold"> {{bid.id}}</md-button></td>
+                        <td><md-button class="md-raised md-primary" href={{"#/auctions/"+bid.auction.id}}>
+                            {{bid.auction.id}}
+                        </md-button></td>
+                        <td><md-button class="md-raised none-decoration"
+                                       style="background: gold" href={{"#/items/"+bid.auction.item.id}}>
+                            {{bid.auction.item.name}}
+                        </md-button></td>
+                        <td>{{bid.price}}</td>
+                        <td>{{bid.dateTime}}</td>
+                        <td>
+                            <md-button class="md-fab" style="background: red" ng-click="delete_bid(bid)" ng-show="data.show.btn_delete_bid">
+                                <md-icon ng-bind="'delete'"></md-icon>
+                                <md-tooltip>Delete bid</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </md-content>
         </md-tab>
     </md-tabs>

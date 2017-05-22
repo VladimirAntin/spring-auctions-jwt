@@ -9,6 +9,7 @@ function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
             disable_inputs:true,
             disable_start_date:true,
             disable_end_date:true,
+            btn_delete_bid:false,
             btn_edit:false,
             btn_delete:false
         },
@@ -33,9 +34,13 @@ function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
             me_service($http,$scope, function (me) {
                 $scope.me=me;
                 if($scope.me!=null){
+                        if($scope.me.role=="admin"){
+                            $scope.data.show.btn_delete_bid=true;
+                        }
                         $scope.data.show.btn_edit=true;
                         $scope.data.show.btn_delete=true;
                 }else{
+                    $scope.data.show.btn_delete_bid=false;
                     $scope.data.show.btn_edit=false;
                     $scope.data.show.btn_delete=false;
                 }
@@ -46,6 +51,20 @@ function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
             window.location.replace("/404/auctions/"+$routeParams.auctionId);
         }
     });
+    $http({
+        method: 'GET',
+        url: '/api/auctions/'+$routeParams.auctionId+"/bids",
+        headers: {
+            "Content-type":"application/json",
+            "Authorization":$scope.token
+        }
+    }).then(function(response) {
+        if(response.status==200){
+            $scope.bids = response.data;
+        }
+    });
+
+
     $scope.openDeleteMode = function (auction) {
         delete_auction(auction,$scope,$http,$mdDialog,$mdToast);
     };
@@ -88,5 +107,19 @@ function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
         }else{
             toast_message("Form is not valid","Ok",$mdToast);
         }
+    };
+
+    $scope.bids_head_items = [
+        {title:"id",icon:"arrow_drop_down", name:"id"},
+        {title:"user",icon:"arrow_drop_down", name:"user.email"},
+        {title:"item",icon:"arrow_drop_down", name:"auction.item.name"},
+        {title:"price",icon:"arrow_drop_down", name:"price"},
+        {title:"date",icon:"arrow_drop_down", name:"dateTime"}
+    ];
+    $scope.delete_bid = function (bid) {
+        delete_bid(bid,$scope,$http,$mdDialog,$mdToast);
+    }
+    $scope.sort =function (name,sort_items){
+        sort($scope,name,sort_items);
     };
 }

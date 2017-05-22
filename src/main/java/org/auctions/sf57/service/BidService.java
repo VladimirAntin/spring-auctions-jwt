@@ -1,6 +1,8 @@
 package org.auctions.sf57.service;
 
+import org.auctions.sf57.entity.Auction;
 import org.auctions.sf57.entity.Bid;
+import org.auctions.sf57.entity.User;
 import org.auctions.sf57.repository.BidRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,15 @@ public class BidService implements BidServiceInterface{
     public Bid findOne(Long bid_id) {
         return bidRepository.findOne(bid_id);
     }
+    @Override
+    public List<Bid> findAllByUser(User user) {
+        return bidRepository.findAllByUser(user);
+    }
 
+    @Override
+    public List<Bid> findAllByAuction(Auction auction) {
+        return bidRepository.findAllByAuction(auction);
+    }
     @Override
     public List<Bid> findAll() {
         return bidRepository.findAll();

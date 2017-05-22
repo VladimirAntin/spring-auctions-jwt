@@ -10,6 +10,7 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
             btn_delete:false,
             btn_password:false,
             btn_delete_auction:false,
+            btn_delete_bid:false,
             disable_change_role:true
         },
         btn_edit:{
@@ -39,8 +40,10 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
                         $scope.data.show.btn_password=true;
                         $scope.data.show.btn_delete=false;
                         $scope.data.show.btn_delete_auction=true;
+                        $scope.data.show.btn_delete_bid=true;
                     }else if($scope.me.role=="admin"){
                         $scope.data.show.btn_delete_auction=true;
+                        $scope.data.show.btn_delete_bid=true;
                         $scope.data.show.btn_edit=true;
                         $scope.data.show.btn_password=true;
                         if($scope.me.email==$scope.user.email){
@@ -49,6 +52,7 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
                             $scope.data.show.btn_delete=true;
                         }
                     }else{
+                        $scope.data.show.btn_delete_bid=false;
                         $scope.data.show.btn_delete_auction=false;
                         $scope.data.show.btn_edit=false;
                         $scope.data.show.btn_password=false;
@@ -75,6 +79,20 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
             $scope.auctions = response.data;
         }
     });
+
+    $http({
+        method: 'GET',
+        url: '/api/users/'+$routeParams.userId+"/bids",
+        headers: {
+            "Content-type":"application/json",
+            "Authorization":$scope.token
+        }
+    }).then(function(response) {
+        if(response.status==200){
+            $scope.bids = response.data;
+        }
+    });
+
     $scope.openDeleteMode = function (user) {
         delete_auction(auction,$scope,$http,$mdDialog,$mdToast);
     };
@@ -162,6 +180,17 @@ function Profile($scope,$http,$routeParams,$mdDialog,$mdToast) {
 
     $scope.delete_auction = function (auction) {
         delete_auction(auction,$scope,$http,$mdDialog,$mdToast);
+    };
+
+    $scope.bids_head_items = [
+        {title:"id",icon:"arrow_drop_down", name:"id"},
+        {title:"auction_id",icon:"arrow_drop_down", name:"auction.id"},
+        {title:"item",icon:"arrow_drop_down", name:"auction.item.name"},
+        {title:"price",icon:"arrow_drop_down", name:"price"},
+        {title:"date",icon:"arrow_drop_down", name:"dateTime"}
+    ];
+    $scope.delete_bid = function (bid) {
+        delete_bid(bid,$scope,$http,$mdDialog,$mdToast);
     }
 
 }
