@@ -65,6 +65,10 @@
                             <label>Search</label>
                             <input type="text" ng-model="search_bids">
                         </md-input-container>
+                        <md-button class="md-fab md-primary" ng-click="add_bid()">
+                            <md-icon ng-bind="'add'"></md-icon>
+                            <md-tooltip>Add bid</md-tooltip>
+                        </md-button>
                     </div>
                 </div>
                 <table class="responsive-table">

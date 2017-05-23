@@ -1,0 +1,30 @@
+.none-decoration{
+    text-transform: none;
+}
+.layout-gt-sm-row .md-block{
+    margin-right: 5em;
+}
+
+/*dialog password*/
+
+.my_dialog{
+    margin: 5em;
+}
+.my_dialog .md-block{
+    width: 35em;
+}
+
+.profile_image{
+    height: 7em;
+    padding-right: 5em;
+    padding-left: 0.5em;
+}
+
+#file input{
+    display: none;
+}
+
+#file{
+    padding-left: 0.5em;
+    margin-bottom: 2em;
+}

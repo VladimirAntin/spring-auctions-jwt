@@ -122,4 +122,20 @@ function Auction($scope,$http,$routeParams,$mdDialog,$mdToast) {
     $scope.sort =function (name,sort_items){
         sort($scope,name,sort_items);
     };
+
+
+    $scope.add_bid = function () {
+        $scope.bid = {
+            price:0,
+            user:$scope.me,
+            auction:{id:$scope.auction.id}
+        };
+        $mdDialog.show({
+            templateUrl: 'views/auctions/add_bid_dialog.html',
+            parent: angular.element(document.body),
+            clickOutsideToClose:true,
+            locals:{bid:$scope.bid,bids:$scope.bids},
+            controller:AddBidController
+        });
+    };
 }

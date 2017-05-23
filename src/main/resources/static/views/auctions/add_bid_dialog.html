@@ -1,0 +1,35 @@
+<md-dialog arial-label="Bid">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h1>Add bid in auction id: {{bid.auction.id}} </h1>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-dialog-content my_dialog">
+            <form name="add_bid">
+                <h3>Email: {{bid.user.email}}</h3>
+                </br>
+                <md-input-container class="md-block">
+                    <label class="md-headline">Price</label>
+                    <input required class="md-headline" ng-model="bid.price" ng-change="check_price(add_bid)"
+                           ng-pattern="/^\d+$/">
+                    <div ng-messages="add_bid.price.$error" role="alert">
+                        <div ng-message-exp="['pattern','required']">
+                        </div>
+                    </div>
+                </md-input-container>
+            </form>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button ng-click="save_bid()" class="md-fab md md-primary"
+                   ng-show="btn_save_bid">
+            <md-icon ng-bind="'save'"></md-icon>
+            <md-tooltip>Send</md-tooltip>
+        </md-button>
+        <md-button ng-click="cancel()" class="md-fab">
+            <md-icon ng-bind="'cancel'"></md-icon>
+            <md-tooltip>Cancel</md-tooltip>
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>
