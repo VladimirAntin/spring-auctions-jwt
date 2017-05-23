@@ -54,7 +54,7 @@ public class BidsController {
 
     @SuppressWarnings("unchecked")
     @DeleteMapping(value = "/bids/{id}")
-    public ResponseEntity removeAuctionById(@PathVariable("id") long id,HttpServletRequest request){
+    public ResponseEntity removeBidById(@PathVariable("id") long id,HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
         Bid bid = bidService.findOne(id);
@@ -70,7 +70,7 @@ public class BidsController {
 
     @SuppressWarnings("unchecked")
     @PostMapping(value = "/bids")
-    public ResponseEntity<BidDTO> post_user(@RequestBody BidDTO bidDTO,final HttpServletRequest request){
+    public ResponseEntity<BidDTO> postBid(@RequestBody BidDTO bidDTO,final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
         User user = userService.findOne(Sf57Utils.long_parser(claims.getSubject()));
         if(user!=null){

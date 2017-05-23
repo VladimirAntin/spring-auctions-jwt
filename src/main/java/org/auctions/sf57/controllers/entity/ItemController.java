@@ -99,7 +99,7 @@ public class ItemController {
 
     @SuppressWarnings("unchecked")
     @PutMapping(value = "/items/{id}")
-    public ResponseEntity<ItemDTO> updateUserById(@PathVariable("id") long id, @RequestBody ItemDTO itemDTO,final HttpServletRequest request){
+    public ResponseEntity<ItemDTO> updateItemById(@PathVariable("id") long id, @RequestBody ItemDTO itemDTO,final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
         String role = (String)claims.get("role");
         Item item = itemService.findOne(id);
@@ -123,7 +123,7 @@ public class ItemController {
 
     @SuppressWarnings("unchecked")
     @PostMapping(value="/items/{id}/upload")
-    public ResponseEntity handleFileUpload(@PathVariable("id") long id, @RequestParam("file") MultipartFile file, final HttpServletRequest request) {
+    public ResponseEntity ItemFileUpload(@PathVariable("id") long id, @RequestParam("file") MultipartFile file, final HttpServletRequest request) {
         String filename =  file.getOriginalFilename();
         if(Sf57Utils.photo_formats(filename)){
             return new ResponseEntity(HttpStatus.CONFLICT);

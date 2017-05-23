@@ -21,7 +21,11 @@ public interface AuctionServiceInterface {
 
     List<Auction> findAllByItem(Item item);
 
-    List<Auction> findAllOrderByStartDate(Date startDate);
+    List<Auction> findAllByOrderByStartDate();
+
+    List<Auction> findAllByOrderByStartDateDesc();
+
+    List<Auction> findAllByItemSold(boolean sold);
 
     Auction save(Auction auction);
 

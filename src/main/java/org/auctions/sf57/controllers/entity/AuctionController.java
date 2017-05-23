@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DefaultValue;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -40,13 +41,26 @@ public class AuctionController {
     private UserServiceInterface userService;
 
     @GetMapping(value = "/auctions")
-    public ResponseEntity<List<AuctionDTO>> getAllAuctions(){
-        List<AuctionDTO> auctionsDTO = Sf57Utils.auctionsToDTO(auctionService.findAll());
+    public ResponseEntity<List<AuctionDTO>> getAllAuctionsOrderByDate(@RequestParam(value = "date", required = false, defaultValue = "") String date){
+        List<AuctionDTO> auctionsDTO = null;
+        if(date.equals("start")){
+            auctionsDTO = Sf57Utils.auctionsToDTO(auctionService.findAllByOrderByStartDate());
+        }else if(date.equals("end")){
+            auctionsDTO = Sf57Utils.auctionsToDTO(auctionService.findAllByOrderByStartDateDesc());
+        }
+        else{
+            auctionsDTO = Sf57Utils.auctionsToDTO(auctionService.findAll());
+        }
         return new ResponseEntity<List<AuctionDTO>>(auctionsDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/auctions/filter")
+    public ResponseEntity<List<AuctionDTO>> getAllAuctionsFilter(@RequestParam(value = "sold", required = false, defaultValue = "false") boolean sold){
+        List<AuctionDTO> auctionsDTO = Sf57Utils.auctionsToDTO(auctionService.findAllByItemSold(sold));
+        return new ResponseEntity<List<AuctionDTO>>(auctionsDTO, HttpStatus.OK);
+    }
     @GetMapping(value="/auctions/{id}")
-    public ResponseEntity<AuctionDTO> getItemById(@PathVariable("id") long id){
+    public ResponseEntity<AuctionDTO> getAuctionById(@PathVariable("id") long id){
         Auction auction = auctionService.findOne(id);
         if(auction==null){
             return new ResponseEntity<AuctionDTO>(HttpStatus.NOT_FOUND);
@@ -81,7 +95,7 @@ public class AuctionController {
 
     @SuppressWarnings("unchecked")
     @PostMapping(value = "/auctions")
-    public ResponseEntity<AuctionDTO> post_user(@RequestBody AuctionDTO auctionDTO, final HttpServletRequest request){
+    public ResponseEntity<AuctionDTO> postAuction(@RequestBody AuctionDTO auctionDTO, final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
         User user = userService.findOne(Sf57Utils.long_parser(claims.getSubject()));
         if(user!=null){
@@ -112,7 +126,7 @@ public class AuctionController {
     }
     @SuppressWarnings("unchecked")
     @PutMapping(value = "/auctions/{id}")
-    public ResponseEntity<AuctionDTO> updateUserById(@PathVariable("id") long id, @RequestBody AuctionDTO auctionDTO,final HttpServletRequest request){
+    public ResponseEntity<AuctionDTO> updateAuctionById(@PathVariable("id") long id, @RequestBody AuctionDTO auctionDTO,final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
         if(auctionDTO==null){
             return new ResponseEntity<AuctionDTO>(HttpStatus.NO_CONTENT);

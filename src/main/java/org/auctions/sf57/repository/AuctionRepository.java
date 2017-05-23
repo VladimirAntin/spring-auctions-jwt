@@ -12,7 +12,11 @@ import java.util.List;
  * Created by vladimir_antin on 8.5.17..
  */
 public interface AuctionRepository extends JpaRepository<Auction,Long> {
-    List<Auction> findAllOrderByStartDate(Date startDate);
+    List<Auction> findAllByItemSold(boolean sold);
+
+    List<Auction> findAllByOrderByStartDate();
+
+    List<Auction> findAllByOrderByStartDateDesc();
 
     List<Auction> findAllByUser(User user);
 

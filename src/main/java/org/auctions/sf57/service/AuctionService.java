@@ -39,8 +39,18 @@ public class AuctionService implements AuctionServiceInterface{
     }
 
     @Override
-    public List<Auction> findAllOrderByStartDate(Date startDate) {
-        return auctionRepository.findAllOrderByStartDate(startDate);
+    public List<Auction> findAllByOrderByStartDate() {
+        return auctionRepository.findAllByOrderByStartDate();
+    }
+
+    @Override
+    public List<Auction> findAllByOrderByStartDateDesc() {
+        return auctionRepository.findAllByOrderByStartDateDesc();
+    }
+
+    @Override
+    public List<Auction> findAllByItemSold(boolean sold) {
+        return auctionRepository.findAllByItemSold(sold);
     }
 
     @Override

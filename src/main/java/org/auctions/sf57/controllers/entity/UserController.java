@@ -177,7 +177,7 @@ public class UserController {
 
     @SuppressWarnings("unchecked")
     @PostMapping(value="/users/{id}/upload")
-    public ResponseEntity handleFileUpload(@PathVariable("id") long id, @RequestParam("file") MultipartFile file,final HttpServletRequest request) {
+    public ResponseEntity userFileUpload(@PathVariable("id") long id, @RequestParam("file") MultipartFile file,final HttpServletRequest request) {
         String filename =  file.getOriginalFilename();
         if(Sf57Utils.photo_formats(filename)){
             return new ResponseEntity(HttpStatus.CONFLICT);
