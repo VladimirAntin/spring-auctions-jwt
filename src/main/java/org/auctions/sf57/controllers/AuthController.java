@@ -5,9 +5,11 @@ import java.util.Date;
 
 import javax.servlet.ServletException;
 
+import io.jsonwebtoken.JwtBuilder;
 import org.auctions.sf57.entity.User;
 import org.auctions.sf57.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +28,8 @@ public class AuthController {
 
     @Autowired
     private UserServiceInterface userService;
-
+    @Value("${time-token-invalid-hours}")
+    private String tokenTimeOut;
 	
     @PostMapping(value = "login")
     public LoginResponse login(@RequestBody final UserLogin login)
@@ -35,9 +38,13 @@ public class AuthController {
         if (user==null) {
             throw new ServletException("Invalid login");
         }
-        return new LoginResponse(Jwts.builder().setSubject(String.valueOf(user.getId()))
-            .claim("role", user.getRole()).setIssuedAt(new Date()).setExpiration(getExpirationDate())
-            .signWith(SignatureAlgorithm.HS256, "secretkey").compact());
+        JwtBuilder jwt = Jwts.builder().setSubject(String.valueOf(user.getId()))
+                .claim("role", user.getRole()).setIssuedAt(new Date())
+                .signWith(SignatureAlgorithm.HS256, "secretkey");
+        if(tokenTimeOut!=null && tokenTimeOut!="" && tokenTimeOut!="0"){
+            jwt.setExpiration(getExpirationDate());
+        }
+        return new LoginResponse(jwt.compact());
     }
 
     @SuppressWarnings("unused")
@@ -56,6 +63,10 @@ public class AuthController {
     }
 
     public Date getExpirationDate(){
+        int time =8;
+        try{
+            time =Integer.parseInt(tokenTimeOut);
+        }catch (Exception e){}
         Calendar cal = Calendar.getInstance(); // creates calendar
         cal.setTime(new Date()); // sets calendar time/date
         cal.add(Calendar.HOUR_OF_DAY, 8); // adds one hour
