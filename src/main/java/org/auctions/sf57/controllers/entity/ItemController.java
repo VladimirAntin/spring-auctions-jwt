@@ -76,25 +76,19 @@ public class ItemController {
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
-    @SuppressWarnings("unchecked")
     @PostMapping(value = "/items")
-    public ResponseEntity<ItemDTO> postItem(@RequestBody ItemDTO itemDTO, final HttpServletRequest request){
-        Claims claims = (Claims) request.getAttribute("claims");
-        String role = (String)claims.get("role");
-        if(role.equals(ADMIN) || role.equals(OWNER)){
-            Item item = null;
-            if(!Sf57Utils.validate(itemDTO.getName(),1,30)){
-                return new ResponseEntity<ItemDTO>(HttpStatus.CONFLICT);
-            }
-            try{
-                itemDTO.setSold(false);
-                item = itemService.save(new Item().fromDTO(itemDTO));
-                return new ResponseEntity<ItemDTO>(new ItemDTO(item),HttpStatus.CREATED);
-            }catch (Exception e){
-                return new ResponseEntity<ItemDTO>(HttpStatus.CONFLICT); //409
-            }
+    public ResponseEntity<ItemDTO> postItem(@RequestBody ItemDTO itemDTO){
+        Item item = null;
+        if(!Sf57Utils.validate(itemDTO.getName(),1,30)){
+            return new ResponseEntity<ItemDTO>(HttpStatus.CONFLICT);
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        try{
+            itemDTO.setSold(false);
+            item = itemService.save(new Item().fromDTO(itemDTO));
+            return new ResponseEntity<ItemDTO>(new ItemDTO(item),HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<ItemDTO>(HttpStatus.CONFLICT); //409
+        }
     }
 
     @SuppressWarnings("unchecked")

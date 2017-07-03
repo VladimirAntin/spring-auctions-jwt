@@ -38,14 +38,9 @@ public class UserController {
     private String ADMIN = "admin";
 
     @GetMapping(value = "/users")
-    public ResponseEntity<List<UserDTO>> getAllUsers(final HttpServletRequest request){
-        Claims claims = (Claims) request.getAttribute("claims");
-        String role = (String)claims.get("role");
-        if(role.equals(ADMIN)){
-            List<UserDTO> users = Sf57Utils.usersToDTO(userService.findAll());
-            return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
-        }
-        return new ResponseEntity<List<UserDTO>>(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
+        List<UserDTO> users = Sf57Utils.usersToDTO(userService.findAll());
+        return new ResponseEntity<List<UserDTO>>(users, HttpStatus.OK);
     }
 
     @GetMapping(value = "/users/{id}")
@@ -75,31 +70,24 @@ public class UserController {
         return new ResponseEntity<List<BidDTO>>(Sf57Utils.bidsToDTO(user.getBids()), HttpStatus.OK);
     }
 
-    @SuppressWarnings("unchecked")
     @PostMapping(value = "/users")
-    public ResponseEntity<UserDTO> post_user(@RequestBody UserDTO userDTO,final HttpServletRequest request){
-        Claims claims = (Claims) request.getAttribute("claims");
-        String role = (String)claims.get("role");
-        if(role.equals(ADMIN)){
-            User user = null;
-            if(!Sf57Utils.validate(userDTO.getEmail(),1,30) ||
-                !Sf57Utils.validate(userDTO.getName(),1,30) ||
-                !Sf57Utils.validate(userDTO.getPassword(),1,10) ||
-                !Sf57Utils.validate(userDTO.getPhone(),0,30)){
-                return new ResponseEntity<UserDTO>(HttpStatus.CONFLICT); //409
-            }
-            try{
-                userDTO.setPicture("/images/profile.png");
-                user = userService.save(new User().fromDTO(userDTO));
-                return new ResponseEntity<UserDTO>(new UserDTO(user),HttpStatus.CREATED);
-            }catch (Exception e){
-                return new ResponseEntity<UserDTO>(HttpStatus.CONFLICT); //409
-            }
+    public ResponseEntity<UserDTO> post_user(@RequestBody UserDTO userDTO){
+        User user = null;
+        if(!Sf57Utils.validate(userDTO.getEmail(),1,30) ||
+            !Sf57Utils.validate(userDTO.getName(),1,30) ||
+            !Sf57Utils.validate(userDTO.getPassword(),1,10) ||
+            !Sf57Utils.validate(userDTO.getPhone(),0,30)){
+            return new ResponseEntity<UserDTO>(HttpStatus.CONFLICT); //409
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        try{
+            userDTO.setPicture("/images/profile.png");
+            user = userService.save(new User().fromDTO(userDTO));
+            return new ResponseEntity<UserDTO>(new UserDTO(user),HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<UserDTO>(HttpStatus.CONFLICT); //409
+        }
     }
 
-    @SuppressWarnings("unchecked")
     @DeleteMapping(value = "/users/{id}")
     public ResponseEntity deleteUserById(@PathVariable("id") long id,final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
@@ -108,15 +96,13 @@ public class UserController {
         if(user==null){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        if(role.equals(ADMIN)){
-            if(user.getId()==Long.parseLong(claims.getSubject())){
-                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-            }
-            userService.remove(id);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        if(user.getId()==Long.parseLong(claims.getSubject())){
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        userService.remove(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+    
     @SuppressWarnings("unchecked")
     @PutMapping(value = "/users/{id}")
     public ResponseEntity<UserDTO> updateUserById(@PathVariable("id") long id, @RequestBody UserDTO userDTO,final HttpServletRequest request){

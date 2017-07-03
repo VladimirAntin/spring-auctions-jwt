@@ -128,6 +128,7 @@ public class AuctionController {
     @PutMapping(value = "/auctions/{id}")
     public ResponseEntity<AuctionDTO> updateAuctionById(@PathVariable("id") long id, @RequestBody AuctionDTO auctionDTO,final HttpServletRequest request){
         Claims claims = (Claims) request.getAttribute("claims");
+        User user = userService.findOne(Sf57Utils.long_parser(claims.getSubject()));
         if(auctionDTO==null){
             return new ResponseEntity<AuctionDTO>(HttpStatus.NO_CONTENT);
         }
@@ -139,6 +140,9 @@ public class AuctionController {
             auction.setStartPrice(auctionDTO.getStartPrice());
         }
         try{
+            if(auction.getUser().getId()!=user.getId() || user.getRole()!=ADMIN){
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
             Date startDate = Sf57Utils.jsFormat.parse(auctionDTO.getStartDate());
             Date endDate = null;
             if(auctionDTO.getEndDate()!=null){
