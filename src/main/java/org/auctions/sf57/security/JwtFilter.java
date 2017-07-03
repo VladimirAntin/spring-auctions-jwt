@@ -12,6 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.auctions.sf57.config.Sf57Utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
@@ -64,10 +65,10 @@ public class JwtFilter extends GenericFilterBean {
                     put("/api/users","POST");
                 }};
 
-                if(claims.get("role").equals("bidder") && !checkRole(link,method,bidderNotAllowedLinks)){
+                if(claims.get("role").equals("bidder") && !Sf57Utils.checkRole(link,method,bidderNotAllowedLinks)){
                     throw new Exception();
                 }
-                if(claims.get("role").equals("owner") && !checkRole(link,method,ownerNotAllowedLinks)){
+                if(claims.get("role").equals("owner") && !Sf57Utils.checkRole(link,method,ownerNotAllowedLinks)){
                     throw new Exception();
                 }
             }
@@ -82,31 +83,5 @@ public class JwtFilter extends GenericFilterBean {
         chain.doFilter(req, res);
     }
 
-    /**
-     *
-     * @param link - link from request
-     * @param method - method from request
-     * @param notAllowedLinks - not allowed links (link,method)
-     * @return success
-     */
-    private boolean checkRole(String link, String method, HashMap<String,String> notAllowedLinks){
-        for (String key:notAllowedLinks.keySet()) {
-            if(notAllowedLinks.get(key).equalsIgnoreCase(method)){
-                if(key.equalsIgnoreCase(link)){
-                    return false;
-                }else if(key.endsWith("/*")){
-                    String rootLink = key.substring(link.length()-2);
-                    if(rootLink.equalsIgnoreCase(link.substring(link.length()-2))){
-                        return false;
-                    }
-                }else if(key.contains("/*/")){
-                    String[] linkSplit = key.split("/*/");
-                    if(link.startsWith(linkSplit[0]) && link.endsWith(linkSplit[1])){
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+
 }

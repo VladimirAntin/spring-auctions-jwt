@@ -12,6 +12,7 @@ import org.auctions.sf57.entity.User;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -81,4 +82,32 @@ public class Sf57Utils {
         return bidDTO;
     }
 
+
+    /**
+     *
+     * @param link - link from request
+     * @param method - method from request
+     * @param notAllowedLinks - not allowed links (link,method)
+     * @return success
+     */
+    public static boolean checkRole(String link, String method, HashMap<String,String> notAllowedLinks){
+        for (String key:notAllowedLinks.keySet()) {
+            if(notAllowedLinks.get(key).equalsIgnoreCase(method)){
+                if(key.equalsIgnoreCase(link)){
+                    return false;
+                }else if(key.endsWith("/*")){
+                    String rootLink = key.substring(link.length()-2);
+                    if(rootLink.equalsIgnoreCase(link.substring(link.length()-2))){
+                        return false;
+                    }
+                }else if(key.contains("/*/")){
+                    String[] linkSplit = key.split("/*/");
+                    if(link.startsWith(linkSplit[0]) && link.endsWith(linkSplit[1])){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }
